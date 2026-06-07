@@ -102,6 +102,21 @@ textarea.ur{direction:rtl;font-size:14px}
 .snd-btn:hover{background:var(--green2);transform:scale(1.05)}
 .snd-btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
 .voice-hint{font-size:10px;color:#8aab96;margin-top:6px;text-align:center;display:none}
+
+.speak-btn{display:inline-flex;align-items:center;gap:5px;margin-top:6px;padding:5px 12px;background:var(--green);color:#fff;border:none;border-radius:18px;font-size:11px;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .2s}
+.speak-btn:hover{background:var(--green2)}
+.speak-btn.speaking{background:#cc2222;animation:micPulse 1s infinite}
+.agent-mode-btn{display:flex;align-items:center;gap:7px;margin:0 auto 12px;padding:9px 18px;background:var(--green);color:#fff;border:none;border-radius:22px;font-size:13px;font-family:'DM Sans',sans-serif;cursor:pointer;font-weight:500;transition:all .2s;box-shadow:0 2px 12px rgba(26,92,58,.25)}
+.agent-mode-btn:hover{background:var(--green2);transform:translateY(-1px)}
+.agent-mode-btn.active{background:#cc2222}
+.agent-banner{background:linear-gradient(135deg,#1a5c3a,#2a7a50);padding:10px 16px;display:flex;align-items:center;gap:10px;display:none}
+.agent-banner.on{display:flex}
+.agent-avatar{width:42px;height:42px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;animation:agentPulse 2s infinite}
+@keyframes agentPulse{0%,100%{box-shadow:0 0 0 0 rgba(201,168,76,.4)}50%{box-shadow:0 0 0 8px rgba(201,168,76,0)}}
+.agent-status{color:#fff;font-size:13px;font-weight:500}
+.agent-sub{color:rgba(255,255,255,.7);font-size:11px;margin-top:1px}
+.stop-agent-btn{margin-left:auto;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:8px;padding:6px 12px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif}
+
 .fnote{text-align:center;font-size:11px;color:var(--muted);line-height:1.7;padding:14px 12px 0}
 @media(max-width:899px){.msgs{max-height:340px}}
 @media(max-width:400px){.cats{grid-template-columns:repeat(2,1fr)}}
@@ -238,6 +253,16 @@ textarea.ur{direction:rtl;font-size:14px}
         <div><div class="cht">WakeelAI Assistant</div><div class="chs" id="chs">Cites exact Pakistani law in every answer</div></div>
         <div class="pill"><div class="pill-dot"></div>AI Active</div>
       </div>
+      
+      <div class="agent-banner" id="agentBanner">
+        <div class="agent-avatar">⚖️</div>
+        <div>
+          <div class="agent-status" id="agentStatus">WakeelAI Agent Active</div>
+          <div class="agent-sub" id="agentSub">Listening for your legal question...</div>
+        </div>
+        <button class="stop-agent-btn" onclick="stopAgent()">Stop Agent</button>
+      </div>
+
       <div class="msgs" id="msgs">
         <div class="msg ai">
           <div class="mav ai">⚖️</div>
@@ -248,6 +273,13 @@ textarea.ur{direction:rtl;font-size:14px}
         </div>
       </div>
       <div class="iarea">
+        
+        <div style="text-align:center;margin-bottom:10px">
+          <button class="agent-mode-btn" id="agentBtn" onclick="toggleAgent()">
+            🎤 Start Voice Agent — Talk to WakeelAI
+          </button>
+        </div>
+
         <div class="samps" id="samps">
           <button class="sbtn" onclick="useSamp(this)">Can police arrest without warrant?</button>
           <button class="sbtn" onclick="useSamp(this)">Tenant eviction rights?</button>
@@ -376,14 +408,329 @@ function setLang(l){
 </body>
 </html>
 <script>
-// Patch: better error handling
-var _origSend = sendMsg;
-window.addEventListener('load', function() {
-  // Override fetch in sendMsg for better errors
-  var origFetch = window.fetch;
-  window.fetch = function(url, opts) {
-    if (url !== '/api/chat') return origFetch(url, opts);
-    return origFetch(url, opts).then(function(r) { return r; });
+var appLang='en',selCat='',chatLog=[],busy=false,activeC=null,recognition=null,isListening=false;
+var agentMode=false,synth=window.speechSynthesis,currentUtterance=null,agentListening=false;
+
+var LAWYER_MAP={property:'🏠 Property / Civil Lawyer — land, tenancy, inheritance disputes',family:'👨‍👩‍👧 Family Law Lawyer — Khula, divorce, custody, maintenance',criminal:'🚔 Criminal Defense Lawyer — FIR, bail, arrest, court defence',labor:'👷 Labor / Employment Lawyer — salary, termination, EOBI',business:'📋 Corporate / Commercial Lawyer — contracts, fraud, trademark',rights:'⚖️ Constitutional / Human Rights Lawyer — writ petitions, fundamental rights'};
+
+var SYS='You are WakeelAI, an expert AI legal assistant for Pakistani law. You speak like a helpful, empathetic Pakistani lawyer — warm, clear, and professional.
+
+IMPORTANT CONVERSATION RULES:
+1. Ask ONE follow-up question at a time to understand the problem better before giving advice
+2. When you have enough information, give clear practical advice with exact law citations
+3. Always cite exact law: Section 54 CrPC, Article 10 Constitution 1973, Section 8 Muslim Family Laws Ordinance 1961, etc
+4. After giving advice, ask if they want to be connected to a lawyer
+5. Be conversational — like a helpful friend who knows law, not a robot
+6. Keep responses concise for voice — 3-4 sentences max per turn
+7. End EVERY final advice with: "📜 Legal basis: [laws cited]"
+8. Do NOT add lawyer recommendation text — added automatically
+9. Speak naturally — avoid bullet points in voice mode, use flowing sentences';
+
+// ── VOICE OUTPUT ───────────────────────────────────────────────
+function speak(text, onEnd) {
+  if (!synth) { if(onEnd) onEnd(); return; }
+  stopSpeaking();
+  // Clean text for speech
+  var clean = text
+    .replace(/📜.*$/gm, '')
+    .replace(/\*\*(.*?)\*\*/g, '$1')
+    .replace(/#{1,3}\s/g, '')
+    .replace(/<[^>]+>/g, '')
+    .replace(/•/g, '')
+    .replace(/
+
+/g, '. ')
+    .replace(/
+/g, ' ')
+    .trim();
+  if (!clean) { if(onEnd) onEnd(); return; }
+  var utter = new SpeechSynthesisUtterance(clean);
+  utter.lang = appLang === 'ur' ? 'ur-PK' : 'en-PK';
+  utter.rate = 0.92;
+  utter.pitch = 1.0;
+  utter.volume = 1.0;
+  // Try to find a good voice
+  var voices = synth.getVoices();
+  var preferred = voices.find(v => appLang === 'ur' ? v.lang.includes('ur') : (v.lang.includes('en') && (v.name.includes('Google') || v.name.includes('Natural'))));
+  if (preferred) utter.voice = preferred;
+  utter.onend = function() { currentUtterance = null; if(onEnd) onEnd(); };
+  utter.onerror = function() { currentUtterance = null; if(onEnd) onEnd(); };
+  currentUtterance = utter;
+  synth.speak(utter);
+}
+
+function stopSpeaking() {
+  if (synth) synth.cancel();
+  currentUtterance = null;
+}
+
+// ── AGENT MODE ─────────────────────────────────────────────────
+function toggleAgent() {
+  if (agentMode) { stopAgent(); return; }
+  agentMode = true;
+  document.getElementById('agentBtn').classList.add('active');
+  document.getElementById('agentBtn').textContent = '⏹ Stop Voice Agent';
+  document.getElementById('agentBanner').classList.add('on');
+  // Greet user
+  var greeting = appLang === 'ur'
+    ? 'السلام علیکم! میں وکیل اے آئی ہوں۔ آپ کا قانونی مسئلہ کیا ہے؟ بتائیں میں مدد کروں گا۔'
+    : 'Assalam o Alaikum! I am WakeelAI, your personal legal assistant. Please tell me your legal problem and I will help you step by step.';
+  setAgentStatus('Speaking...', 'WakeelAI is greeting you');
+  speak(greeting, function() {
+    if (agentMode) startAgentListening();
+  });
+  // Show greeting in chat
+  addMsg('ai', greeting, null, null, false);
+}
+
+function stopAgent() {
+  agentMode = false;
+  agentListening = false;
+  stopSpeaking();
+  if (recognition && isListening) { recognition.stop(); }
+  document.getElementById('agentBtn').classList.remove('active');
+  document.getElementById('agentBtn').innerHTML = '🎤 Start Voice Agent — Talk to WakeelAI';
+  document.getElementById('agentBanner').classList.remove('on');
+}
+
+function setAgentStatus(status, sub) {
+  document.getElementById('agentStatus').textContent = status;
+  document.getElementById('agentSub').textContent = sub || '';
+}
+
+function startAgentListening() {
+  if (!agentMode || !recognition) return;
+  setAgentStatus('🎤 Listening...', 'Speak your question now');
+  recognition.lang = appLang === 'ur' ? 'ur-PK' : 'en-PK';
+  try { recognition.start(); agentListening = true; } catch(e) {}
+}
+
+// ── VOICE INPUT SETUP ─────────────────────────────────────────
+(function(){
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR) return;
+  document.getElementById('micBtn').style.display='flex';
+  document.getElementById('voiceHint').style.display='block';
+  recognition=new SR();
+  recognition.continuous=false;
+  recognition.interimResults=true;
+
+  recognition.onstart=function(){
+    isListening=true;
+    if(!agentMode){
+      document.getElementById('micBtn').classList.add('listening');
+      document.getElementById('micBtn').textContent='⏹';
+      document.getElementById('voiceBar').classList.add('on');
+      document.getElementById('voiceErr').classList.remove('on');
+    }
   };
-});
+
+  recognition.onresult=function(e){
+    var f='',t='';
+    for(var i=e.resultIndex;i<e.results.length;i++){
+      var tx=e.results[i][0].transcript;
+      if(e.results[i].isFinal) f+=tx; else t+=tx;
+    }
+    if(f){
+      if(agentMode){
+        // Agent mode — auto send
+        setAgentStatus('💭 Thinking...', 'WakeelAI is finding your answer');
+        sendMsg(f.trim());
+      } else {
+        var c=document.getElementById('inp').value;
+        document.getElementById('inp').value=(c+' '+f).trim();
+        ar(document.getElementById('inp'));
+      }
+    } else if(!agentMode && t) {
+      document.getElementById('voiceText').textContent=t;
+    } else if(agentMode && t) {
+      setAgentStatus('🎤 Hearing: ' + t, '');
+    }
+  };
+
+  recognition.onerror=function(e){
+    stopVoice();
+    if(agentMode){
+      setAgentStatus('⚠️ Could not hear', 'Tap mic button or type below');
+    } else {
+      var err=e.error==='not-allowed'?'Microphone access denied.':e.error==='no-speech'?'No speech detected. Try again.':'Voice error: '+e.error;
+      var el=document.getElementById('voiceErr');el.textContent='⚠️ '+err;el.classList.add('on');
+    }
+  };
+
+  recognition.onend=function(){
+    isListening=false; agentListening=false;
+    if(!agentMode){
+      var b=document.getElementById('micBtn');b.classList.remove('listening');b.textContent='🎤';
+      document.getElementById('voiceBar').classList.remove('on');
+    }
+  };
+})();
+
+function stopVoice(){
+  isListening=false;
+  var b=document.getElementById('micBtn');
+  if(b){b.classList.remove('listening');b.textContent='🎤';}
+  var vb=document.getElementById('voiceBar');
+  if(vb) vb.classList.remove('on');
+}
+
+function toggleVoice(){
+  if(!recognition)return;
+  if(isListening){recognition.stop();stopVoice();return;}
+  document.getElementById('voiceErr').classList.remove('on');
+  recognition.lang=appLang==='ur'?'ur-PK':'en-PK';
+  try{recognition.start();}catch(e){
+    var el=document.getElementById('voiceErr');el.textContent='⚠️ Could not start. Try again.';el.classList.add('on');
+  }
+}
+
+// ── CATEGORY ─────────────────────────────────────────────────
+function detectCat(q){var t=q.toLowerCase();if(/property|land|rent|tenant|landlord|evict|inherit|deed|jaidaad|kiraya/.test(t))return'property';if(/family|divorce|marriage|khula|custody|nikah|mehr|maintenance|nafqa|talaq|husband|wife|children/.test(t))return'family';if(/police|arrest|fir|bail|criminal|murder|theft|blackmail|warrant|crpc|ppc/.test(t))return'criminal';if(/salary|wage|job|employer|fired|terminated|overtime|labor|labour|eobi|pension/.test(t))return'labor';if(/business|contract|partner|company|trademark|cheque|secp|brand|fraud|489/.test(t))return'business';if(/rights|constitution|fundamental|discrimination|freedom|writ|petition|article/.test(t))return'rights';return selCat||null;}
+function toggleCat(cat){if(activeC===cat){closeCat(cat);return;}if(activeC)closeCat(activeC,false);activeC=cat;selCat=cat;document.getElementById('p-'+cat).classList.add('on');document.getElementById('c-'+cat).classList.add('on');setTimeout(function(){document.getElementById('p-'+cat).scrollIntoView({behavior:'smooth',block:'nearest'});},100);}
+function closeCat(cat,reset){if(reset===undefined)reset=true;document.getElementById('p-'+cat).classList.remove('on');document.getElementById('c-'+cat).classList.remove('on');if(reset){activeC=null;selCat='';}}
+function toggleFaq(el){var a=el.nextElementSibling,open=el.classList.contains('on');el.closest('.pbody').querySelectorAll('.fq').forEach(function(q){q.classList.remove('on');q.nextElementSibling.classList.remove('on');});if(!open){el.classList.add('on');a.classList.add('on');}}
+function focusChat(){document.getElementById('inp').focus();document.getElementById('chatBox').scrollIntoView({behavior:'smooth'});}
+function askQ(q){document.getElementById('inp').value=q;document.getElementById('chatBox').scrollIntoView({behavior:'smooth'});setTimeout(sendMsg,300);}
+function useSamp(b){document.getElementById('inp').value=b.textContent;sendMsg();}
+function ar(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,110)+'px';}
+function hk(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}}
+
+// ── ADD MESSAGE ───────────────────────────────────────────────
+function addMsg(role, html, cat, sources, doSpeak) {
+  var msgs=document.getElementById('msgs');
+  var isUr=appLang==='ur';
+  var div=document.createElement('div');div.className='msg '+role;
+  var disc='⚠️ '+(isUr?'عام قانونی معلومات — اپنے معاملے کے لیے وکیل سے رجوع کریں۔':'General legal information only. Consult a qualified lawyer for your specific case.');
+  var lwr='';
+  if(role==='ai'&&cat&&LAWYER_MAP[cat]){
+    var lbl=isUr?'👨‍💼 اس معاملے کے لیے:':'👨‍💼 For this matter, you need a:';
+    lwr='<div class="lwrec">'+lbl+'<br><strong>'+LAWYER_MAP[cat]+'</strong></div>';
+  }
+  var src=sources?'<div class="src-box">'+sources+'</div>':'';
+
+  // Speak button for AI messages
+  var speakBtnHtml = '';
+  if (role === 'ai' && synth) {
+    var speakLabel = isUr ? '🔊 سنیں' : '🔊 Listen';
+    speakBtnHtml = '<button class="speak-btn" onclick="speakThis(this, '' + encodeURIComponent(html) + '')">' + speakLabel + '</button>';
+  }
+
+  if(role==='ai'){
+    div.innerHTML='<div class="mav ai">⚖️</div><div class="mc"><div class="mb">'+html+'</div>'+src+lwr+speakBtnHtml+'<div class="disc">'+disc+'</div></div>';
+  } else {
+    div.innerHTML='<div class="mav us">👤</div><div class="mb"'+(isUr?' style="direction:rtl;text-align:right"':'')+'>'+html+'</div>';
+  }
+  msgs.appendChild(div);
+  msgs.scrollTop=msgs.scrollHeight;
+
+  // Auto-speak in agent mode
+  if (role === 'ai' && (doSpeak || agentMode)) {
+    var plainText = html.replace(/<[^>]+>/g,'').replace(/📜.*$/gm,'').trim();
+    setAgentStatus && setAgentStatus('🔊 Speaking...', 'WakeelAI is explaining your rights');
+    speak(plainText, function() {
+      if (agentMode) {
+        setTimeout(function() {
+          setAgentStatus('🎤 Listening...', 'Your turn — speak now');
+          startAgentListening();
+        }, 800);
+      }
+    });
+  }
+}
+
+function speakThis(btn, encodedText) {
+  var text = decodeURIComponent(encodedText).replace(/<[^>]+>/g,'');
+  if (btn.classList.contains('speaking')) {
+    stopSpeaking();
+    btn.classList.remove('speaking');
+    btn.innerHTML = appLang === 'ur' ? '🔊 سنیں' : '🔊 Listen';
+    return;
+  }
+  // Stop any other speaking
+  document.querySelectorAll('.speak-btn.speaking').forEach(function(b) {
+    b.classList.remove('speaking');
+    b.innerHTML = appLang === 'ur' ? '🔊 سنیں' : '🔊 Listen';
+  });
+  btn.classList.add('speaking');
+  btn.innerHTML = '⏹ Stop';
+  speak(text, function() {
+    btn.classList.remove('speaking');
+    btn.innerHTML = appLang === 'ur' ? '🔊 سنیں' : '🔊 Listen';
+  });
+}
+
+function showTyping(){var msgs=document.getElementById('msgs');var d=document.createElement('div');d.className='msg ai';d.id='typ';d.innerHTML='<div class="mav ai">⚖️</div><div class="typing"><span></span><span></span><span></span></div>';msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;}
+function rmTyping(){var t=document.getElementById('typ');if(t)t.remove();}
+
+// ── SEND MESSAGE ──────────────────────────────────────────────
+function sendMsg(overrideText){
+  if(busy)return;
+  if(isListening&&!agentMode){recognition.stop();stopVoice();}
+  var txt=overrideText||document.getElementById('inp').value.trim();
+  if(!txt)return;
+  addMsg('user',txt.replace(/</g,'&lt;'),null,null,false);
+  if(!overrideText){document.getElementById('inp').value='';document.getElementById('inp').style.height='auto';}
+  busy=true;document.getElementById('sndbtn').disabled=true;showTyping();
+  var cat=detectCat(txt);
+  chatLog.push({role:'user',content:txt});
+
+  // Add agent context to system prompt
+  var agentInstruction = agentMode ? '
+
+IMPORTANT: User is in VOICE AGENT MODE. Keep responses SHORT (2-3 sentences max) and conversational. Ask one follow-up question at a time. Speak like a helpful friend.' : '';
+
+  fetch('/api/chat',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({system:SYS+agentInstruction+(selCat?'
+Category: '+selCat+' law.':''),messages:chatLog})
+  })
+  .then(function(r){return r.json();})
+  .then(function(data){
+    if(data.error)throw new Error(data.error);
+    var raw=(data.content||[]).map(function(b){return b.type==='text'?b.text:'';}).join('').trim();
+    if(!raw)throw new Error('Empty');
+    var srcMatch=raw.match(/📜\s*Legal basis[:\s]+(.+)/i);
+    var sources=srcMatch?srcMatch[0].trim():null;
+    var body=sources?raw.replace(sources,'').trim():raw;
+    chatLog.push({role:'assistant',content:raw});
+    rmTyping();
+    addMsg('ai',body.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/
+
+/g,'<br><br>').replace(/
+/g,'<br>'),cat,sources,true);
+    if(agentMode) setAgentStatus('🔊 Speaking...','WakeelAI is answering');
+  })
+  .catch(function(err){
+    rmTyping();chatLog.pop();
+    var errMsg='⚠️ '+((err&&err.message)?err.message:'Could not connect. Check internet.');
+    addMsg('ai',errMsg,null,null,false);
+    if(agentMode){setAgentStatus('⚠️ Error','Please try again');setTimeout(startAgentListening,2000);}
+  })
+  .finally(function(){busy=false;document.getElementById('sndbtn').disabled=false;});
+}
+
+// ── LANGUAGE ──────────────────────────────────────────────────
+function setLang(l){
+  appLang=l;
+  document.getElementById('ben').classList.toggle('on',l==='en');
+  document.getElementById('bur').classList.toggle('on',l==='ur');
+  var inp=document.getElementById('inp');inp.classList.toggle('ur',l==='ur');
+  inp.placeholder=l==='ur'?'اپنا قانونی سوال لکھیں یا بولیں...':'Type or speak your legal question...';
+  document.getElementById('htitle').innerHTML=l==='ur'?'اپنے <span>قانونی حقوق</span> جانیں،<br>حقیقی حوالوں کے ساتھ':'Your <span>Legal Rights</span>,<br>With Real Law Citations';
+  document.getElementById('hsub').textContent=l==='ur'?'بولیں یا لکھیں — ہر جواب میں پاکستانی قانون کا مخصوص سیکشن نمبر ذکر ہوتا ہے۔':'Speak or type your legal question. Every answer cites exact Pakistani law.';
+  document.getElementById('catlbl').textContent=l==='ur'?'قانونی زمرہ منتخب کریں':'Choose a legal category';
+  document.getElementById('chs').textContent=l==='ur'?'ہر جواب میں پاکستانی قانون کا حوالہ':'Cites exact Pakistani law in every answer';
+  document.getElementById('wmsg').innerHTML=l==='ur'
+    ?'<b>السلام علیکم!</b> میں <b>وکیل اے آئی</b> ہوں۔<br><br>🎤 <b>وائس ایجنٹ</b> — بٹن دبائیں اور بولیں، میں سن کر جواب دوں گا۔<br><br>📜 ہر جواب میں مخصوص قانون کا سیکشن نمبر ذکر ہوتا ہے۔<br><br>👈 زمرہ منتخب کریں یا سوال لکھیں۔'
+    :'<b>Assalam o Alaikum!</b> I am <b>WakeelAI</b> — your Pakistani legal assistant.<br><br>🎤 <b>Voice Agent</b> — press the button and talk to me, I will listen and speak back.<br><br>📜 Every answer cites the exact law and section number.<br><br>👈 Select a category or type your question.';
+  document.getElementById('wdisc').textContent=l==='ur'?'⚠️ عام قانونی معلومات — باقاعدہ مشورے کے لیے وکیل سے رجوع کریں۔':'⚠️ General legal information only. Always consult a qualified lawyer for your specific case.';
+  document.getElementById('voiceHint').textContent=l==='ur'?'🎤 مائیک دبائیں — اردو یا انگریزی میں بولیں':'🎤 Tap mic to speak in English or Urdu';
+  document.getElementById('agentBtn').innerHTML=l==='ur'?'🎤 وائس ایجنٹ شروع کریں — وکیل اے آئی سے بات کریں':'🎤 Start Voice Agent — Talk to WakeelAI';
+  var sEn=['Can police arrest without warrant?','Tenant eviction rights?','How to file an FIR?',"Women's divorce rights?",'Minimum wage in Pakistan?'];
+  var sUr=['بغیر وارنٹ گرفتاری؟','کرایہ دار کے حقوق؟','ایف آئی آر کیسے کروائیں؟','خلع کے حقوق؟','کم از کم اجرت؟'];
+  document.querySelectorAll('.sbtn').forEach(function(b,i){b.textContent=(l==='ur'?sUr:sEn)[i]||b.textContent;});
+  if(recognition)recognition.lang=l==='ur'?'ur-PK':'en-PK';
+}
 </script>
