@@ -6,7 +6,7 @@
 <title>WakeelAI — Pakistani Legal Assistant</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-:root{--green:#1a5c3a;--green2:#2a7a50;--pale:#e8f5ee;--gold:#c9a84c;--goldl:#f0d98a;--dark:#0f1f17;--text:#1c2e24;--muted:#5a7566;--bg:#f7faf8;--white:#fff;--border:#d4e6db;--shadow:0 4px 24px rgba(26,92,58,.10)}
+:root{--green:#1a5c3a;--green2:#2a7a50;--pale:#e8f5ee;--gold:#c9a84c;--goldl:#f0d98a;--dark:#0f1f17;--text:#1c2e24;--muted:#5a7566;--bg:#f7faf8;--white:#fff;--border:#d4e6db;--shadow:0 4px 24px rgba(26,92,58,.10);--red:#cc2222;--blue:#185FA5;--bluebg:#E6F1FB}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
 header{background:var(--dark);height:60px;padding:0 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;border-bottom:1px solid #1e3528}
@@ -18,61 +18,74 @@ header{background:var(--dark);height:60px;padding:0 20px;display:flex;align-item
 .ltog{display:flex;background:#1e3528;border-radius:8px;overflow:hidden;border:1px solid #2a4a38}
 .lbtn{padding:6px 14px;font-size:12px;font-family:'DM Sans',sans-serif;border:none;background:transparent;color:#8aab96;cursor:pointer;font-weight:500;transition:all .2s}
 .lbtn.on{background:var(--gold);color:var(--dark)}
-.hero{background:linear-gradient(135deg,var(--dark) 0%,#1a3d28 55%,#0f2a1c 100%);padding:32px 20px 24px;text-align:center}
+.hero{background:linear-gradient(135deg,var(--dark) 0%,#1a3d28 55%,#0f2a1c 100%);padding:32px 20px 24px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'⚖️';position:absolute;font-size:180px;opacity:.04;top:-20px;right:-10px;transform:rotate(-15deg);pointer-events:none}
 .hbadge{display:inline-flex;align-items:center;gap:6px;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.3);color:var(--goldl);padding:5px 14px;border-radius:20px;font-size:11px;font-weight:500;margin-bottom:12px;letter-spacing:.5px}
 .hero h1{font-family:'Playfair Display',serif;font-size:clamp(22px,4vw,34px);color:#fff;line-height:1.2;margin-bottom:8px}
 .hero h1 span{color:var(--gold)}
 .hero p{color:#8aab96;font-size:13px;max-width:500px;margin:0 auto;line-height:1.75;font-weight:300}
-.app-body{flex:1;display:flex;flex-direction:column;max-width:1100px;width:100%;margin:0 auto;padding:20px 16px 40px;gap:20px}
-@media(min-width:900px){.app-body{flex-direction:row;align-items:flex-start}.sidebar{width:300px;flex-shrink:0;position:sticky;top:80px;max-height:calc(100vh - 100px);overflow-y:auto}.chat-col{flex:1;min-width:0}}
+.app-body{flex:1;display:flex;flex-direction:column;max-width:1150px;width:100%;margin:0 auto;padding:20px 16px 40px;gap:20px}
+@media(min-width:920px){.app-body{flex-direction:row;align-items:flex-start}.sidebar{width:310px;flex-shrink:0;position:sticky;top:80px;max-height:calc(100vh - 100px);overflow-y:auto}.chat-col{flex:1;min-width:0}}
+/* SIDEBAR */
 .sec-lbl{font-size:10px;font-weight:500;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px}
 .cats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
 .cbt{background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:12px 6px;text-align:center;cursor:pointer;transition:all .22s}
 .cbt:hover{border-color:var(--green);background:var(--pale);transform:translateY(-1px)}
 .cbt.on{border-color:var(--green);background:var(--green);transform:translateY(-1px);box-shadow:0 4px 14px rgba(26,92,58,.22)}
 .cbt.on .cn{color:#fff}.cbt.on .cu{color:rgba(255,255,255,.7)}
-.ci{font-size:22px;display:block;margin-bottom:5px}
+.ci{font-size:20px;display:block;margin-bottom:4px}
 .cn{font-size:11px;font-weight:500;color:var(--text);display:block}
-.cu{font-size:10px;color:var(--muted);display:block;margin-top:2px;direction:rtl}
+.cu{font-size:9px;color:var(--muted);display:block;margin-top:2px;direction:rtl}
 .panel{background:var(--white);border:1.5px solid var(--border);border-radius:14px;overflow:hidden;display:none;margin-bottom:8px;animation:sld .25s ease}
 .panel.on{display:block}
 @keyframes sld{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
-.ph{background:var(--green);padding:14px 16px;display:flex;align-items:center;gap:10px}
-.phi{width:38px;height:38px;background:rgba(255,255,255,.15);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
-.pht{color:#fff;font-weight:500;font-size:14px}.phd{color:rgba(255,255,255,.65);font-size:11px;margin-top:1px}
-.pcl{margin-left:auto;background:rgba(255,255,255,.15);border:none;color:#fff;border-radius:7px;padding:5px 10px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;flex-shrink:0}
-.pbody{padding:14px}
-.ptl{font-size:10px;font-weight:500;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
-.pitem{display:flex;align-items:flex-start;gap:8px;padding:9px 10px;background:var(--bg);border-radius:9px;border:1px solid var(--border);cursor:pointer;transition:all .2s;margin-bottom:6px}
+.ph{background:var(--green);padding:13px 15px;display:flex;align-items:center;gap:10px}
+.phi{width:36px;height:36px;background:rgba(255,255,255,.15);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.pht{color:#fff;font-weight:500;font-size:13px}.phd{color:rgba(255,255,255,.65);font-size:10px;margin-top:1px}
+.pcl{margin-left:auto;background:rgba(255,255,255,.15);border:none;color:#fff;border-radius:7px;padding:4px 9px;font-size:10px;cursor:pointer;font-family:'DM Sans',sans-serif;flex-shrink:0}
+.pbody{padding:13px}
+.ptl{font-size:10px;font-weight:500;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:7px}
+.pitem{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:var(--bg);border-radius:9px;border:1px solid var(--border);cursor:pointer;transition:all .2s;margin-bottom:5px}
 .pitem:hover{border-color:var(--green);background:var(--pale)}
-.pdot{width:7px;height:7px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:5px}
+.pdot{width:6px;height:6px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:5px}
 .ptxt{font-size:12px;color:var(--text);line-height:1.5}
 .ptag{font-size:10px;color:var(--muted);margin-top:1px}
-.faq{border:1px solid var(--border);border-radius:9px;overflow:hidden;margin-bottom:6px}
-.fq{padding:10px 12px;font-size:12px;font-weight:500;color:var(--text);cursor:pointer;display:flex;justify-content:space-between;align-items:center;background:var(--bg);user-select:none;transition:all .2s}
+.faq{border:1px solid var(--border);border-radius:9px;overflow:hidden;margin-bottom:5px}
+.fq{padding:9px 12px;font-size:12px;font-weight:500;color:var(--text);cursor:pointer;display:flex;justify-content:space-between;align-items:center;background:var(--bg);user-select:none;transition:all .2s}
 .fq:hover,.fq.on{background:var(--pale);color:var(--green)}
 .farr{font-size:10px;transition:transform .2s;margin-left:6px;flex-shrink:0}
 .fq.on .farr{transform:rotate(180deg)}
 .fa{font-size:12px;color:var(--muted);line-height:1.6;max-height:0;overflow:hidden;transition:all .3s ease;padding:0 12px}
-.fa.on{max-height:300px;padding:10px 12px;border-top:1px solid var(--border)}
-.askbtn{width:100%;margin-top:12px;padding:10px;background:var(--green);color:#fff;border:none;border-radius:9px;font-size:12px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;transition:background .2s}
+.fa.on{max-height:400px;padding:9px 12px;border-top:1px solid var(--border)}
+.askbtn{width:100%;margin-top:10px;padding:9px;background:var(--green);color:#fff;border:none;border-radius:9px;font-size:12px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;transition:background .2s}
 .askbtn:hover{background:var(--green2)}
-/* AGENT BANNER */
-.agent-banner{background:linear-gradient(135deg,#1a5c3a,#2a7a50);padding:12px 18px;display:none;align-items:center;gap:12px}
-.agent-banner.on{display:flex}
-.agent-av{width:42px;height:42px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;animation:agentPulse 2s infinite}
-@keyframes agentPulse{0%,100%{box-shadow:0 0 0 0 rgba(201,168,76,.5)}50%{box-shadow:0 0 0 10px rgba(201,168,76,0)}}
-.agent-status{color:#fff;font-size:13px;font-weight:500}
-.agent-sub{color:rgba(255,255,255,.7);font-size:11px;margin-top:2px}
-.stop-agent{margin-left:auto;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:8px;padding:6px 12px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap}
 /* CHAT */
 .chat-box{background:var(--white);border-radius:16px;border:1.5px solid var(--border);box-shadow:var(--shadow);overflow:hidden}
-.chdr{background:var(--green);padding:14px 18px;display:flex;align-items:center;gap:11px}
+.chdr{background:var(--green);padding:13px 18px;display:flex;align-items:center;gap:11px}
 .chav{width:38px;height:38px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
 .cht{color:#fff;font-weight:500;font-size:14px}.chs{color:rgba(255,255,255,.65);font-size:11px;margin-top:1px}
 .pill{display:flex;align-items:center;gap:5px;margin-left:auto;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);padding:4px 10px;border-radius:10px;font-size:10px;color:rgba(255,255,255,.85);font-weight:500;white-space:nowrap}
 .pill-dot{width:6px;height:6px;background:#4ade80;border-radius:50%;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+/* AGENT BANNER */
+.agent-banner{background:linear-gradient(135deg,#1a5c3a,#2a7a50);padding:11px 18px;display:none;align-items:center;gap:12px}
+.agent-banner.on{display:flex}
+.agent-av{width:40px;height:40px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;animation:agentPulse 2s infinite}
+@keyframes agentPulse{0%,100%{box-shadow:0 0 0 0 rgba(201,168,76,.5)}50%{box-shadow:0 0 0 10px rgba(201,168,76,0)}}
+.agent-status{color:#fff;font-size:13px;font-weight:500}
+.agent-sub{color:rgba(255,255,255,.7);font-size:11px;margin-top:1px}
+.stop-agent{margin-left:auto;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:8px;padding:5px 11px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap}
+/* DOCUMENT READER */
+.doc-reader{margin:0 18px 0;border:1.5px dashed var(--border);border-radius:12px;padding:16px;background:var(--bg);text-align:center;cursor:pointer;transition:all .2s;position:relative}
+.doc-reader:hover{border-color:var(--green);background:var(--pale)}
+.doc-reader.active{border-color:var(--green);border-style:solid;background:var(--pale)}
+.doc-reader input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.doc-icon{font-size:28px;margin-bottom:6px}
+.doc-title{font-size:13px;font-weight:500;color:var(--green);margin-bottom:3px}
+.doc-sub{font-size:11px;color:var(--muted)}
+.doc-analyzing{display:none;align-items:center;gap:8px;padding:10px 16px;background:var(--bluebg);border-top:1px solid var(--border);font-size:12px;color:var(--blue)}
+.doc-analyzing.on{display:flex}
+/* MESSAGES */
 .msgs{padding:18px;min-height:280px;max-height:460px;overflow-y:auto;display:flex;flex-direction:column;gap:14px;scroll-behavior:smooth}
 .msg{display:flex;gap:9px;animation:fi .3s ease}
 @keyframes fi{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
@@ -80,29 +93,36 @@ header{background:var(--dark);height:60px;padding:0 20px;display:flex;align-item
 .mav{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;margin-top:2px}
 .mav.ai{background:var(--pale);border:1.5px solid var(--border)}
 .mav.us{background:var(--goldl);border:1.5px solid #e0c870}
-.mc{max-width:82%}
-.mb{padding:11px 14px;border-radius:14px;font-size:13px;line-height:1.8}
+.mc{max-width:84%}
+.mb{padding:11px 14px;border-radius:14px;font-size:13px;line-height:1.85}
 .msg.ai .mb{background:var(--pale);border:1px solid var(--border);border-bottom-left-radius:3px;color:var(--text)}
 .msg.u .mb{background:var(--green);color:#fff;border-bottom-right-radius:3px}
-.src-box{font-size:10px;color:#185FA5;margin-top:6px;padding:6px 10px;background:#E6F1FB;border-radius:7px;border-left:3px solid #378ADD;line-height:1.6}
-.disc{font-size:10px;color:var(--muted);margin-top:5px;padding:6px 10px;background:#fff8e6;border-radius:7px;border-left:3px solid var(--gold);line-height:1.5}
-.lwrec{font-size:11px;color:var(--green);margin-top:5px;padding:8px 11px;background:var(--pale);border-radius:7px;border-left:3px solid var(--green);line-height:1.6;font-weight:500}
-.speak-btn{display:inline-flex;align-items:center;gap:5px;margin-top:6px;padding:5px 12px;background:var(--green);color:#fff;border:none;border-radius:18px;font-size:11px;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .2s}
-.speak-btn.active{background:#cc2222}
-.typing-wrap{display:flex;gap:9px;align-items:center}
+/* ROUTING CARD */
+.route-card{margin-top:8px;background:var(--white);border:1.5px solid var(--border);border-radius:11px;overflow:hidden}
+.route-row{display:flex;align-items:flex-start;gap:10px;padding:9px 12px;border-bottom:1px solid var(--border);font-size:12px}
+.route-row:last-child{border-bottom:none}
+.route-label{font-weight:600;color:var(--green);min-width:90px;flex-shrink:0;font-size:11px;text-transform:uppercase;letter-spacing:.4px;padding-top:1px}
+.route-val{color:var(--text);line-height:1.6}
+.route-header{background:var(--green);padding:8px 12px;font-size:11px;font-weight:600;color:#fff;letter-spacing:.5px;text-transform:uppercase}
+/* SOURCE + DISC */
+.src-box{font-size:10px;color:var(--blue);margin-top:6px;padding:6px 10px;background:var(--bluebg);border-radius:7px;border-left:3px solid #378ADD;line-height:1.6}
+.disc{font-size:10px;color:var(--muted);margin-top:5px;padding:7px 10px;background:#fff8e6;border-radius:7px;border-left:3px solid var(--gold);line-height:1.6;font-style:italic}
+.speak-btn{display:inline-flex;align-items:center;gap:5px;margin-top:6px;padding:4px 11px;background:var(--green);color:#fff;border:none;border-radius:16px;font-size:11px;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .2s}
+.speak-btn.active{background:var(--red)}
+/* TYPING */
 .typing{display:flex;gap:4px;align-items:center;padding:12px 14px;background:var(--pale);border-radius:14px;border-bottom-left-radius:3px;border:1px solid var(--border)}
 .typing span{width:6px;height:6px;background:var(--green);border-radius:50%;animation:bounce 1.2s infinite}
 .typing span:nth-child(2){animation-delay:.2s}.typing span:nth-child(3){animation-delay:.4s}
 @keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
-/* INPUT */
+/* INPUT AREA */
 .iarea{padding:13px 16px;border-top:1px solid var(--border);background:#fafcfb}
-.agent-btn{width:100%;padding:12px;background:var(--green);color:#fff;border:none;border-radius:11px;font-size:14px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:12px;box-shadow:0 2px 12px rgba(26,92,58,.25)}
+.agent-btn{width:100%;padding:11px;background:var(--green);color:#fff;border:none;border-radius:11px;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:11px;box-shadow:0 2px 12px rgba(26,92,58,.25)}
 .agent-btn:hover{background:var(--green2);transform:translateY(-1px)}
-.agent-btn.active{background:#cc2222;box-shadow:0 2px 12px rgba(204,34,34,.25)}
+.agent-btn.active{background:var(--red);box-shadow:0 2px 12px rgba(204,34,34,.25)}
 .samps{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
 .sbtn{background:var(--white);border:1px solid var(--border);border-radius:18px;padding:5px 11px;font-size:11px;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;white-space:nowrap}
 .sbtn:hover{border-color:var(--green);color:var(--green);background:var(--pale)}
-.voice-bar{margin-bottom:8px;padding:8px 12px;background:#fff0f0;border:1px solid #ffcccc;border-radius:9px;font-size:12px;color:#cc2222;display:none;align-items:center;gap:8px}
+.voice-bar{margin-bottom:8px;padding:8px 12px;background:#fff0f0;border:1px solid #ffcccc;border-radius:9px;font-size:12px;color:var(--red);display:none;align-items:center;gap:8px}
 .voice-bar.on{display:flex}
 .voice-err{margin-bottom:8px;padding:7px 12px;background:#fff8e6;border:1px solid var(--goldl);border-radius:9px;font-size:11px;color:#854F0B;display:none}
 .voice-err.on{display:block}
@@ -111,14 +131,14 @@ textarea{flex:1;border:1.5px solid var(--border);border-radius:11px;padding:11px
 textarea:focus{border-color:var(--green)}
 textarea.ur{direction:rtl;font-size:14px}
 .mic-btn{width:44px;height:44px;background:#f0f0f0;border:1.5px solid var(--border);border-radius:11px;cursor:pointer;display:none;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;transition:all .2s}
-.mic-btn.listening{background:#cc2222;border-color:#aa0000;animation:micPulse 1s infinite}
+.mic-btn.listening{background:var(--red);border-color:#aa0000;animation:micPulse 1s infinite}
 @keyframes micPulse{0%,100%{box-shadow:0 0 0 0 rgba(204,34,34,.4)}50%{box-shadow:0 0 0 8px rgba(204,34,34,0)}}
 .snd-btn{width:44px;height:44px;background:var(--green);border:none;border-radius:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;font-size:18px;transition:all .2s}
 .snd-btn:hover{background:var(--green2);transform:scale(1.05)}
 .snd-btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
 .voice-hint{font-size:10px;color:#8aab96;margin-top:6px;text-align:center;display:none}
 .fnote{text-align:center;font-size:11px;color:var(--muted);line-height:1.7;padding:14px 12px 0}
-@media(max-width:899px){.msgs{max-height:340px}}
+@media(max-width:919px){.msgs{max-height:340px}}
 @media(max-width:400px){.cats{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
@@ -134,127 +154,142 @@ textarea.ur{direction:rtl;font-size:14px}
 </header>
 
 <div class="hero">
-  <div class="hbadge">🇵🇰 Pakistani Law · AI Powered · 🎤 Voice Agent</div>
-  <h1 id="htitle">Your <span>Legal Rights</span>,<br>Explained by AI</h1>
-  <p id="hsub">Talk to WakeelAI like a real lawyer. Speak your problem — it listens, thinks, and answers back in voice. Every answer cites exact Pakistani law.</p>
+  <div class="hbadge">🇵🇰 Pakistani Law · Precise Legal Routing · 🎤 Voice Agent · 📄 Document Reader</div>
+  <h1 id="htitle">Your <span>Legal Rights</span>,<br>Explained with Precision</h1>
+  <p id="hsub">WakeelAI routes your case to the exact lawyer type and legal forum. Speak or type — every answer is precise, sourced, and legally accurate.</p>
 </div>
 
 <div class="app-body">
   <div class="sidebar">
     <div class="sec-lbl" id="catlbl">Choose a legal category</div>
     <div class="cats">
-      <div class="cbt" id="c-property" onclick="toggleCat('property')"><span class="ci">🏠</span><span class="cn">Property</span><span class="cu">جائیداد</span></div>
-      <div class="cbt" id="c-family"   onclick="toggleCat('family')"  ><span class="ci">👨‍👩‍👧</span><span class="cn">Family</span><span class="cu">خاندانی</span></div>
       <div class="cbt" id="c-criminal" onclick="toggleCat('criminal')"><span class="ci">🚔</span><span class="cn">Criminal</span><span class="cu">فوجداری</span></div>
+      <div class="cbt" id="c-family"   onclick="toggleCat('family')"  ><span class="ci">👨‍👩‍👧</span><span class="cn">Family</span><span class="cu">خاندانی</span></div>
+      <div class="cbt" id="c-property" onclick="toggleCat('property')"><span class="ci">🏠</span><span class="cn">Property</span><span class="cu">جائیداد</span></div>
+      <div class="cbt" id="c-cyber"    onclick="toggleCat('cyber')"   ><span class="ci">💻</span><span class="cn">Cybercrime</span><span class="cu">سائبر</span></div>
       <div class="cbt" id="c-labor"    onclick="toggleCat('labor')"   ><span class="ci">👷</span><span class="cn">Labor</span><span class="cu">مزدور</span></div>
       <div class="cbt" id="c-business" onclick="toggleCat('business')"><span class="ci">📋</span><span class="cn">Business</span><span class="cu">کاروبار</span></div>
-      <div class="cbt" id="c-rights"   onclick="toggleCat('rights')"  ><span class="ci">⚖️</span><span class="cn">Rights</span><span class="cu">حقوق</span></div>
     </div>
-    <div class="panel" id="p-property">
-      <div class="ph"><div class="phi">🏠</div><div><div class="pht">Property Law</div><div class="phd">جائیداد کا قانون</div></div><button class="pcl" onclick="closeCat('property')">✕</button></div>
-      <div class="pbody">
-        <div class="ptl">Common Problems</div>
-        <div class="pitem" onclick="askQ('What are my rights as a tenant facing illegal eviction in Pakistan? Cite exact law.')"><div class="pdot"></div><div><div class="ptxt">Illegal eviction by landlord</div><div class="ptag">Tap to ask →</div></div></div>
-        <div class="pitem" onclick="askQ('How do I resolve a land ownership dispute in Pakistan? Cite relevant law.')"><div class="pdot"></div><div><div class="ptxt">Land ownership dispute</div><div class="ptag">Tap to ask →</div></div></div>
-        <div class="pitem" onclick="askQ('My landlord is not returning my security deposit in Pakistan. What can I do legally?')"><div class="pdot"></div><div><div class="ptxt">Security deposit not returned</div><div class="ptag">Tap to ask →</div></div></div>
-        <div class="pitem" onclick="askQ('Someone is illegally occupying my property in Pakistan. How do I get it back?')"><div class="pdot"></div><div><div class="ptxt">Illegal property occupation</div><div class="ptag">Tap to ask →</div></div></div>
-        <div class="pitem" onclick="askQ('How is property inherited between sons and daughters under Pakistani law? Cite exact sections.')"><div class="pdot"></div><div><div class="ptxt">Property inheritance rights</div><div class="ptag">Tap to ask →</div></div></div>
-        <div class="ptl" style="margin-top:12px">Quick FAQs</div>
-        <div class="faq"><div class="fq" onclick="toggleFaq(this)">Can a landlord evict without notice? <span class="farr">▼</span></div><div class="fa">No. Under the Punjab Rented Premises Act 2009, a landlord must give written notice and get a Rent Controller court order. Forceful eviction without a court order is illegal and punishable.</div></div>
-        <div class="faq"><div class="fq" onclick="toggleFaq(this)">How is property inherited in Pakistan? <span class="farr">▼</span></div><div class="fa">Under the Muslim Personal Law (Shariat) Application Act 1962, sons receive double the share of daughters. Spouses, parents, and children all have fixed Quranic shares enforced by Pakistani courts.</div></div>
-        <div class="faq"><div class="fq" onclick="toggleFaq(this)">Is a verbal rental agreement valid? <span class="farr">▼</span></div><div class="fa">It may be valid under the Contract Act 1872 but is nearly impossible to prove. Always get a written signed agreement registered with the local union council for full legal protection.</div></div>
-        <button class="askbtn" onclick="focusChat()">💬 Ask about Property Law</button>
-      </div>
-    </div>
-    <div class="panel" id="p-family">
-      <div class="ph"><div class="phi">👨‍👩‍👧</div><div><div class="pht">Family Law</div><div class="phd">خاندانی قانون</div></div><button class="pcl" onclick="closeCat('family')">✕</button></div>
-      <div class="pbody">
-        <div class="ptl">Common Problems</div>
-        <div class="pitem" onclick="askQ('What are the Khula divorce rights for a woman in Pakistan under Muslim Family Laws Ordinance 1961?')"><div class="pdot"></div><div><div class="ptxt">Divorce rights for women (Khula)</div><div class="ptag">Tap to ask →</div></div></div>
-        <div class="pitem" onclick="askQ('Who gets custody of children after divorce in Pakistan under Guardian and Wards Act 1890?')"><div class="pdot"></div><div><div class="ptxt">Child custody after divorce</div><div class="ptag">Tap to ask →</div></div></div>
-        <div class="pitem" onclick="askQ('My husband is not paying maintenance nafqa after separation in Pakistan. What are my legal rights?')"><div class="pdot"></div><div><div class="ptxt">Husband not paying maintenance</div><div class="ptag">Tap to ask →</div></div></div>
-        <div class="pitem" onclick="askQ('What is the legal age of marriage in Pakistan under the Child Marriage Restraint Act 1929?')"><div class="pdot"></div><div><div class="ptxt">Legal age of marriage</div><div class="ptag">Tap to ask →</div></div></div>
-        <div class="pitem" onclick="askQ('How do I register my Nikah officially in Pakistan and why is it legally important?')"><div class="pdot"></div><div><div class="ptxt">Nikah registration process</div><div class="ptag">Tap to ask →</div></div></div>
-        <div class="ptl" style="margin-top:12px">Quick FAQs</div>
-        <div class="faq"><div class="fq" onclick="toggleFaq(this)">Can a woman get Khula? <span class="farr">▼</span></div><div class="fa">Yes. Under Section 8 of the Muslim Family Laws Ordinance 1961, a woman can apply for Khula in Family Court without her husband's consent. Process takes 3-6 months.</div></div>
-        <div class="faq"><div class="fq" onclick="toggleFaq(this)">Who gets custody of children? <span class="farr">▼</span></div><div class="fa">Under the Guardian and Wards Act 1890, the mother has hizanat (custody) of sons until age 7 and daughters until puberty. Courts always prioritize the child's best interest.</div></div>
-        <div class="faq"><div class="fq" onclick="toggleFaq(this)">Is mehr mandatory? <span class="farr">▼</span></div><div class="fa">Yes. Mehr is mandatory under the Muslim Family Laws Ordinance 1961. It must be stated in the Nikahnama and the wife can claim it at any point during or after marriage.</div></div>
-        <button class="askbtn" onclick="focusChat()">💬 Ask about Family Law</button>
-      </div>
-    </div>
+
+    <!-- CRIMINAL -->
     <div class="panel" id="p-criminal">
       <div class="ph"><div class="phi">🚔</div><div><div class="pht">Criminal Law</div><div class="phd">فوجداری قانون</div></div><button class="pcl" onclick="closeCat('criminal')">✕</button></div>
       <div class="pbody">
         <div class="ptl">Common Problems</div>
-        <div class="pitem" onclick="askQ('Can police arrest someone without a warrant in Pakistan? Explain Section 54 CrPC.')"><div class="pdot"></div><div><div class="ptxt">Arrest without warrant</div><div class="ptag">Tap to ask →</div></div></div>
-        <div class="pitem" onclick="askQ('How do I file an FIR at a police station in Pakistan under Section 154 CrPC? What if police refuse?')"><div class="pdot"></div><div><div class="ptxt">Filing FIR or police refusing</div><div class="ptag">Tap to ask →</div></div></div>
-        <div class="pitem" onclick="askQ('Someone is blackmailing me in Pakistan. What legal action under PPC Sections 384 and 503?')"><div class="pdot"></div><div><div class="ptxt">Blackmail and harassment</div><div class="ptag">Tap to ask →</div></div></div>
-        <div class="pitem" onclick="askQ('How do I get bail for someone arrested in Pakistan? Explain bailable vs non-bailable offences.')"><div class="pdot"></div><div><div class="ptxt">Getting bail after arrest</div><div class="ptag">Tap to ask →</div></div></div>
-        <div class="pitem" onclick="askQ('Police are harassing me without cause in Pakistan. What are my rights under Article 14 of the Constitution?')"><div class="pdot"></div><div><div class="ptxt">Police harassment</div><div class="ptag">Tap to ask →</div></div></div>
-        <div class="ptl" style="margin-top:12px">Quick FAQs</div>
-        <div class="faq"><div class="fq" onclick="toggleFaq(this)">Can police arrest without warrant? <span class="farr">▼</span></div><div class="fa">Under Section 54 CrPC, police can arrest without warrant only when catching someone mid-crime, for serious cognizable offence suspects, or prior criminal record holders. All other arrests require a magistrate warrant.</div></div>
-        <div class="faq"><div class="fq" onclick="toggleFaq(this)">Rights when arrested? <span class="farr">▼</span></div><div class="fa">Under Article 10 of the Constitution: right to know reason for arrest, right to a lawyer immediately, right to be produced before a magistrate within 24 hours. Torture violates Article 14 and is a criminal offence.</div></div>
-        <div class="faq"><div class="fq" onclick="toggleFaq(this)">Police refuse to file FIR? <span class="farr">▼</span></div><div class="fa">Under Section 154 CrPC, the SHO is legally bound to register an FIR. If refused: approach the SP, file a complaint in Magistrate Court under Section 200 CrPC. Refusal is itself punishable.</div></div>
+        <div class="pitem" onclick="askQ('Police arrested my family member without a warrant. What are our rights and what should we do immediately?')"><div class="pdot"></div><div><div class="ptxt">Arrest without warrant</div><div class="ptag">Tap to ask →</div></div></div>
+        <div class="pitem" onclick="askQ('How do I file an FIR at a police station in Pakistan? What if the police refuse to register it?')"><div class="pdot"></div><div><div class="ptxt">Filing FIR or police refusing</div><div class="ptag">Tap to ask →</div></div></div>
+        <div class="pitem" onclick="askQ('Someone physically assaulted me in Pakistan. What legal steps should I take and where do I go?')"><div class="pdot"></div><div><div class="ptxt">Physical assault</div><div class="ptag">Tap to ask →</div></div></div>
+        <div class="pitem" onclick="askQ('How do I get bail for someone who has been arrested in Pakistan?')"><div class="pdot"></div><div><div class="ptxt">Getting bail after arrest</div><div class="ptag">Tap to ask →</div></div></div>
+        <div class="pitem" onclick="askQ('Someone committed financial fraud against me in Pakistan. What legal action can I take?')"><div class="pdot"></div><div><div class="ptxt">Financial fraud</div><div class="ptag">Tap to ask →</div></div></div>
+        <div class="ptl" style="margin-top:10px">Quick FAQs</div>
+        <div class="faq"><div class="fq" onclick="toggleFaq(this)">Can police arrest without warrant? <span class="farr">▼</span></div><div class="fa">Under the Code of Criminal Procedure (CrPC), police may arrest without warrant in cognizable offences — serious crimes like theft, assault, or murder caught in progress. For non-cognizable matters, a magistrate's warrant is required. If arrested, you must be produced before a magistrate within 24 hours.</div></div>
+        <div class="faq"><div class="fq" onclick="toggleFaq(this)">What if police refuse FIR? <span class="farr">▼</span></div><div class="fa">Under the CrPC, the SHO is legally bound to register your FIR for cognizable offences. If refused, escalate to the DSP or SP. You may also file a direct complaint before the Area Magistrate. Unjustified refusal is itself a punishable act.</div></div>
+        <div class="faq"><div class="fq" onclick="toggleFaq(this)">Bailable vs non-bailable offence? <span class="farr">▼</span></div><div class="fa">Bailable offences allow bail as a right upon request. Non-bailable offences (such as murder or robbery) require a court to grant bail based on case merits. A Sessions Court handles pre-arrest bail applications for serious matters.</div></div>
         <button class="askbtn" onclick="focusChat()">💬 Ask about Criminal Law</button>
       </div>
     </div>
+
+    <!-- FAMILY -->
+    <div class="panel" id="p-family">
+      <div class="ph"><div class="phi">👨‍👩‍👧</div><div><div class="pht">Family Law</div><div class="phd">خاندانی قانون</div></div><button class="pcl" onclick="closeCat('family')">✕</button></div>
+      <div class="pbody">
+        <div class="ptl">Common Problems</div>
+        <div class="pitem" onclick="askQ('I am a woman and want to get Khula divorce in Pakistan. What is the process and what do I need?')"><div class="pdot"></div><div><div class="ptxt">Khula divorce for women</div><div class="ptag">Tap to ask →</div></div></div>
+        <div class="pitem" onclick="askQ('Who gets custody of children after divorce in Pakistan and what is the legal process?')"><div class="pdot"></div><div><div class="ptxt">Child custody after divorce</div><div class="ptag">Tap to ask →</div></div></div>
+        <div class="pitem" onclick="askQ('My husband is not paying maintenance after separation. What legal steps can I take in Pakistan?')"><div class="pdot"></div><div><div class="ptxt">Husband not paying maintenance</div><div class="ptag">Tap to ask →</div></div></div>
+        <div class="pitem" onclick="askQ('I am experiencing domestic violence in Pakistan. What legal protection is available and where do I go?')"><div class="pdot"></div><div><div class="ptxt">Domestic violence</div><div class="ptag">Tap to ask →</div></div></div>
+        <div class="pitem" onclick="askQ('How do I register my Nikah officially in Pakistan and why is it important legally?')"><div class="pdot"></div><div><div class="ptxt">Nikah registration</div><div class="ptag">Tap to ask →</div></div></div>
+        <div class="ptl" style="margin-top:10px">Quick FAQs</div>
+        <div class="faq"><div class="fq" onclick="toggleFaq(this)">Can a woman get Khula? <span class="farr">▼</span></div><div class="fa">Yes. Under the Muslim Family Laws Ordinance 1961, a woman may seek Khula through the Family Court. The court summons both parties and attempts reconciliation. If unsuccessful, Khula is granted. The wife may be required to return the mehr. The process typically takes several months.</div></div>
+        <div class="faq"><div class="fq" onclick="toggleFaq(this)">Who gets custody of children? <span class="farr">▼</span></div><div class="fa">Under the Guardian and Wards Act 1890, courts determine custody based primarily on the child's best interest. Traditionally, mothers retain custody of young children (sons until age 7, daughters until puberty), but courts may differ based on circumstances.</div></div>
+        <div class="faq"><div class="fq" onclick="toggleFaq(this)">Is mehr mandatory? <span class="farr">▼</span></div><div class="fa">Yes. Mehr is a mandatory right of the wife under Islamic law and the Muslim Family Laws Ordinance 1961. It must be specified in the Nikahnama. The wife may claim it at any point — during the marriage or upon divorce.</div></div>
+        <button class="askbtn" onclick="focusChat()">💬 Ask about Family Law</button>
+      </div>
+    </div>
+
+    <!-- PROPERTY -->
+    <div class="panel" id="p-property">
+      <div class="ph"><div class="phi">🏠</div><div><div class="pht">Property Law</div><div class="phd">جائیداد کا قانون</div></div><button class="pcl" onclick="closeCat('property')">✕</button></div>
+      <div class="pbody">
+        <div class="ptl">Common Problems</div>
+        <div class="pitem" onclick="askQ('My landlord is trying to evict me forcefully without a court order in Pakistan. What are my rights?')"><div class="pdot"></div><div><div class="ptxt">Illegal eviction by landlord</div><div class="ptag">Tap to ask →</div></div></div>
+        <div class="pitem" onclick="askQ('Someone has illegally occupied my land or property in Pakistan. What legal steps can I take?')"><div class="pdot"></div><div><div class="ptxt">Illegal land occupation (Qabza)</div><div class="ptag">Tap to ask →</div></div></div>
+        <div class="pitem" onclick="askQ('There is a dispute over property inheritance in my family in Pakistan. How do I resolve it legally?')"><div class="pdot"></div><div><div class="ptxt">Property inheritance dispute</div><div class="ptag">Tap to ask →</div></div></div>
+        <div class="pitem" onclick="askQ('My landlord is not returning my security deposit in Pakistan. What can I do?')"><div class="pdot"></div><div><div class="ptxt">Security deposit not returned</div><div class="ptag">Tap to ask →</div></div></div>
+        <div class="pitem" onclick="askQ('I want to understand my Fard-e-Malkiat land record in Pakistan. How do I verify land ownership?')"><div class="pdot"></div><div><div class="ptxt">Fard / land record verification</div><div class="ptag">Tap to ask →</div></div></div>
+        <div class="ptl" style="margin-top:10px">Quick FAQs</div>
+        <div class="faq"><div class="fq" onclick="toggleFaq(this)">Can landlord evict without notice? <span class="farr">▼</span></div><div class="fa">No. Under provincial Rent Control legislation (such as the Punjab Rented Premises Act), forcible eviction without a Rent Tribunal court order is illegal. The landlord must follow due process — notice, then court proceedings.</div></div>
+        <div class="faq"><div class="fq" onclick="toggleFaq(this)">How is property inherited in Pakistan? <span class="farr">▼</span></div><div class="fa">For Muslims, inheritance follows the Muslim Personal Law (Shariat) Application Act. Shares are fixed by Quranic principles — sons generally receive double the share of daughters. The local Civil Court or Revenue Office handles inheritance matters.</div></div>
+        <div class="faq"><div class="fq" onclick="toggleFaq(this)">What is Fard-e-Malkiat? <span class="farr">▼</span></div><div class="fa">Fard-e-Malkiat is an official land ownership record issued by the Revenue Department (Patwari office). It is the primary document proving ownership of agricultural or residential land. Always verify this before any property transaction.</div></div>
+        <button class="askbtn" onclick="focusChat()">💬 Ask about Property Law</button>
+      </div>
+    </div>
+
+    <!-- CYBER -->
+    <div class="panel" id="p-cyber">
+      <div class="ph"><div class="phi">💻</div><div><div class="pht">Cybercrime</div><div class="phd">سائبر کرائم</div></div><button class="pcl" onclick="closeCat('cyber')">✕</button></div>
+      <div class="pbody">
+        <div class="ptl">Common Problems</div>
+        <div class="pitem" onclick="askQ('Someone is digitally blackmailing me using my private photos or videos in Pakistan. What should I do immediately?')"><div class="pdot"></div><div><div class="ptxt">Digital blackmail / leaked media</div><div class="ptag">Tap to ask →</div></div></div>
+        <div class="pitem" onclick="askQ('I am receiving threats and harassment through WhatsApp or social media in Pakistan. What legal action can I take?')"><div class="pdot"></div><div><div class="ptxt">Online threats and harassment</div><div class="ptag">Tap to ask →</div></div></div>
+        <div class="pitem" onclick="askQ('Someone has hacked my social media account or bank account in Pakistan. How do I report it?')"><div class="pdot"></div><div><div class="ptxt">Hacking / account compromise</div><div class="ptag">Tap to ask →</div></div></div>
+        <div class="pitem" onclick="askQ('Someone is spreading fake or defamatory content about me online in Pakistan. What can I do legally?')"><div class="pdot"></div><div><div class="ptxt">Online defamation / fake content</div><div class="ptag">Tap to ask →</div></div></div>
+        <div class="pitem" onclick="askQ('I was scammed online and lost money in Pakistan. How do I report it and recover my money?')"><div class="pdot"></div><div><div class="ptxt">Online fraud / scam</div><div class="ptag">Tap to ask →</div></div></div>
+        <div class="ptl" style="margin-top:10px">Quick FAQs</div>
+        <div class="faq"><div class="fq" onclick="toggleFaq(this)">Where do I report cybercrime in Pakistan? <span class="farr">▼</span></div><div class="fa">Report to the FIA Cyber Crime Reporting Centre (CCRC). You can file online at fia.gov.pk or visit any FIA CCRC office in person. Keep all digital evidence — screenshots, links, phone numbers — before reporting.</div></div>
+        <div class="faq"><div class="fq" onclick="toggleFaq(this)">What law covers cybercrime in Pakistan? <span class="farr">▼</span></div><div class="fa">The Prevention of Electronic Crimes Act 2016 (PECA 2016) is the primary cybercrime law in Pakistan. It covers online harassment, hacking, digital blackmail, fake content, and cyber fraud. The FIA is the investigating authority.</div></div>
+        <div class="faq"><div class="fq" onclick="toggleFaq(this)">What evidence to collect for cybercrime? <span class="farr">▼</span></div><div class="fa">Do NOT delete anything. Take clear screenshots of all messages, profile links, phone numbers, and URLs. Note the exact dates and times. Preserve original files. This digital evidence is critical for your FIA complaint and any court proceedings.</div></div>
+        <button class="askbtn" onclick="focusChat()">💬 Ask about Cybercrime</button>
+      </div>
+    </div>
+
+    <!-- LABOR -->
     <div class="panel" id="p-labor">
       <div class="ph"><div class="phi">👷</div><div><div class="pht">Labor Law</div><div class="phd">مزدور حقوق</div></div><button class="pcl" onclick="closeCat('labor')">✕</button></div>
       <div class="pbody">
         <div class="ptl">Common Problems</div>
-        <div class="pitem" onclick="askQ('My employer has not paid my salary in Pakistan. What legal action under Payment of Wages Act 1936?')"><div class="pdot"></div><div><div class="ptxt">Employer not paying salary</div><div class="ptag">Tap to ask →</div></div></div>
-        <div class="pitem" onclick="askQ('I was fired without notice in Pakistan. What are my rights under Industrial and Commercial Employment Ordinance 1968?')"><div class="pdot"></div><div><div class="ptxt">Wrongful termination</div><div class="ptag">Tap to ask →</div></div></div>
-        <div class="pitem" onclick="askQ('What is the minimum wage in Pakistan 2024 under the Minimum Wages Ordinance 1961?')"><div class="pdot"></div><div><div class="ptxt">Minimum wage rights</div><div class="ptag">Tap to ask →</div></div></div>
-        <div class="pitem" onclick="askQ('My employer forces overtime without pay in Pakistan. Is this legal under the Factories Act 1934?')"><div class="pdot"></div><div><div class="ptxt">Forced overtime without pay</div><div class="ptag">Tap to ask →</div></div></div>
-        <div class="pitem" onclick="askQ('How do I claim EOBI pension and gratuity after leaving a job in Pakistan? Cite the EOBI Act 1976.')"><div class="pdot"></div><div><div class="ptxt">EOBI pension and gratuity</div><div class="ptag">Tap to ask →</div></div></div>
-        <div class="ptl" style="margin-top:12px">Quick FAQs</div>
-        <div class="faq"><div class="fq" onclick="toggleFaq(this)">Minimum wage in Pakistan? <span class="farr">▼</span></div><div class="fa">Under the Minimum Wages Ordinance 1961, the federal minimum wage is PKR 37,000/month as of 2024. Paying below this is a criminal offence. File a free complaint at the Labour Department.</div></div>
-        <div class="faq"><div class="fq" onclick="toggleFaq(this)">Can I be fired without notice? <span class="farr">▼</span></div><div class="fa">No. Under the Industrial and Commercial Employment Ordinance 1968, one month written notice or pay in lieu is required. Termination without cause entitles you to compensation through the Labour Court.</div></div>
-        <div class="faq"><div class="fq" onclick="toggleFaq(this)">Working hours limit? <span class="farr">▼</span></div><div class="fa">Under the Factories Act 1934, maximum 8 hours/day and 48 hours/week. Any work beyond this must be paid as overtime at double the normal rate under Section 34 of the Act.</div></div>
+        <div class="pitem" onclick="askQ('My employer has not paid my salary in Pakistan. What legal steps can I take?')"><div class="pdot"></div><div><div class="ptxt">Employer not paying salary</div><div class="ptag">Tap to ask →</div></div></div>
+        <div class="pitem" onclick="askQ('I was fired from my job without notice or reason in Pakistan. What are my legal rights?')"><div class="pdot"></div><div><div class="ptxt">Wrongful termination</div><div class="ptag">Tap to ask →</div></div></div>
+        <div class="pitem" onclick="askQ('What is the minimum wage in Pakistan and what law enforces it?')"><div class="pdot"></div><div><div class="ptxt">Minimum wage rights</div><div class="ptag">Tap to ask →</div></div></div>
+        <div class="pitem" onclick="askQ('My employer is making me work overtime without paying extra in Pakistan. Is this legal?')"><div class="pdot"></div><div><div class="ptxt">Forced overtime without pay</div><div class="ptag">Tap to ask →</div></div></div>
+        <div class="pitem" onclick="askQ('How do I claim my EOBI pension after leaving a job in Pakistan?')"><div class="pdot"></div><div><div class="ptxt">EOBI pension claim</div><div class="ptag">Tap to ask →</div></div></div>
+        <div class="ptl" style="margin-top:10px">Quick FAQs</div>
+        <div class="faq"><div class="fq" onclick="toggleFaq(this)">Minimum wage in Pakistan? <span class="farr">▼</span></div><div class="fa">The federal government notifies the minimum wage periodically under the Minimum Wages Ordinance 1961. As of 2024, the federal minimum wage is PKR 37,000 per month. Employers violating this face penalties under the Act. File a complaint at the district Labour Department — it is free.</div></div>
+        <div class="faq"><div class="fq" onclick="toggleFaq(this)">Can I be fired without notice? <span class="farr">▼</span></div><div class="fa">Under the Industrial and Commercial Employment (Standing Orders) Ordinance 1968, termination requires one month's written notice or equivalent pay in lieu. Dismissal without valid reason or notice may be challenged before the Labour Court for reinstatement or compensation.</div></div>
+        <div class="faq"><div class="fq" onclick="toggleFaq(this)">Working hours limit? <span class="farr">▼</span></div><div class="fa">Under the Factories Act 1934, the legal limit is 8 hours per day and 48 hours per week. Work beyond this qualifies as overtime and must be compensated at a higher rate as prescribed by law. Violations are reported to the Labour Inspector.</div></div>
         <button class="askbtn" onclick="focusChat()">💬 Ask about Labor Law</button>
       </div>
     </div>
+
+    <!-- BUSINESS -->
     <div class="panel" id="p-business">
       <div class="ph"><div class="phi">📋</div><div><div class="pht">Business Law</div><div class="phd">کاروباری قانون</div></div><button class="pcl" onclick="closeCat('business')">✕</button></div>
       <div class="pbody">
         <div class="ptl">Common Problems</div>
-        <div class="pitem" onclick="askQ('A business partner committed fraud in Pakistan. What legal action under PPC Section 420?')"><div class="pdot"></div><div><div class="ptxt">Business partner fraud</div><div class="ptag">Tap to ask →</div></div></div>
-        <div class="pitem" onclick="askQ('How do I register a company with SECP in Pakistan under Companies Act 2017? Step by step.')"><div class="pdot"></div><div><div class="ptxt">How to register a business</div><div class="ptag">Tap to ask →</div></div></div>
-        <div class="pitem" onclick="askQ('Someone has not paid me under our contract in Pakistan. How do I recover money under Contract Act 1872?')"><div class="pdot"></div><div><div class="ptxt">Contract payment dispute</div><div class="ptag">Tap to ask →</div></div></div>
-        <div class="pitem" onclick="askQ('Someone is using my business name without permission in Pakistan. How do I protect my trademark with IPO Pakistan?')"><div class="pdot"></div><div><div class="ptxt">Brand and trademark protection</div><div class="ptag">Tap to ask →</div></div></div>
-        <div class="pitem" onclick="askQ('A cheque given to me bounced in Pakistan. What are my options under Section 489-F PPC?')"><div class="pdot"></div><div><div class="ptxt">Cheque bounce case</div><div class="ptag">Tap to ask →</div></div></div>
-        <div class="ptl" style="margin-top:12px">Quick FAQs</div>
-        <div class="faq"><div class="fq" onclick="toggleFaq(this)">How to register a business? <span class="farr">▼</span></div><div class="fa">Under the Companies Act 2017, register at secp.gov.pk online. For sole proprietorship, get NTN from FBR at fbr.gov.pk. Company registration takes 1-3 days and costs PKR 1,500-3,000.</div></div>
-        <div class="faq"><div class="fq" onclick="toggleFaq(this)">Is a verbal contract binding? <span class="farr">▼</span></div><div class="fa">Yes under the Contract Act 1872 (Section 10), but nearly impossible to prove. Always use a written agreement — even a simple signed document is fully enforceable in Pakistani civil court.</div></div>
-        <div class="faq"><div class="fq" onclick="toggleFaq(this)">Cheque bounce — what to do? <span class="farr">▼</span></div><div class="fa">Under Section 489-F PPC, issuing a dishonoured cheque is a criminal offence punishable up to 3 years. File a criminal complaint at the police station and a civil recovery suit simultaneously.</div></div>
+        <div class="pitem" onclick="askQ('A business partner defrauded me and took our shared money in Pakistan. What legal action can I take?')"><div class="pdot"></div><div><div class="ptxt">Business partner fraud</div><div class="ptag">Tap to ask →</div></div></div>
+        <div class="pitem" onclick="askQ('How do I officially register a company in Pakistan? What is the step by step process?')"><div class="pdot"></div><div><div class="ptxt">How to register a business</div><div class="ptag">Tap to ask →</div></div></div>
+        <div class="pitem" onclick="askQ('Someone has not paid me what they owe under our contract in Pakistan. How do I recover my money legally?')"><div class="pdot"></div><div><div class="ptxt">Contract payment dispute</div><div class="ptag">Tap to ask →</div></div></div>
+        <div class="pitem" onclick="askQ('Someone is using my business name or logo without permission in Pakistan. How do I protect my trademark?')"><div class="pdot"></div><div><div class="ptxt">Trademark protection</div><div class="ptag">Tap to ask →</div></div></div>
+        <div class="pitem" onclick="askQ('A cheque someone gave me bounced in Pakistan. What are my legal options?')"><div class="pdot"></div><div><div class="ptxt">Cheque bounce case</div><div class="ptag">Tap to ask →</div></div></div>
+        <div class="ptl" style="margin-top:10px">Quick FAQs</div>
+        <div class="faq"><div class="fq" onclick="toggleFaq(this)">How to register a company? <span class="farr">▼</span></div><div class="fa">Companies are registered with the Securities and Exchange Commission of Pakistan (SECP) under the Companies Act 2017. You can apply online at secp.gov.pk. For a sole proprietorship or partnership, register your National Tax Number (NTN) with the Federal Board of Revenue (FBR) at fbr.gov.pk.</div></div>
+        <div class="faq"><div class="fq" onclick="toggleFaq(this)">Is a verbal contract binding? <span class="farr">▼</span></div><div class="fa">Under the Contract Act 1872, oral agreements can be legally binding if they meet the elements of a valid contract (offer, acceptance, consideration, capacity). However, verbal contracts are very difficult to prove in court. Always use a written, signed agreement for business matters.</div></div>
+        <div class="faq"><div class="fq" onclick="toggleFaq(this)">What to do for cheque bounce? <span class="farr">▼</span></div><div class="fa">A dishonoured cheque is a criminal offence under the Pakistan Penal Code. You may file a criminal complaint at the police station. Simultaneously, file a civil suit for recovery of the cheque amount. Consult a criminal defense lawyer for the criminal complaint and a civil lawyer for the recovery suit.</div></div>
         <button class="askbtn" onclick="focusChat()">💬 Ask about Business Law</button>
-      </div>
-    </div>
-    <div class="panel" id="p-rights">
-      <div class="ph"><div class="phi">⚖️</div><div><div class="pht">Constitutional Rights</div><div class="phd">آئینی حقوق</div></div><button class="pcl" onclick="closeCat('rights')">✕</button></div>
-      <div class="pbody">
-        <div class="ptl">Common Problems</div>
-        <div class="pitem" onclick="askQ('What are my fundamental rights under Articles 8 to 28 of the Constitution of Pakistan 1973?')"><div class="pdot"></div><div><div class="ptxt">My fundamental constitutional rights</div><div class="ptag">Tap to ask →</div></div></div>
-        <div class="pitem" onclick="askQ('I am being discriminated against based on religion or ethnicity in Pakistan. What does Article 25 say?')"><div class="pdot"></div><div><div class="ptxt">Discrimination based on religion</div><div class="ptag">Tap to ask →</div></div></div>
-        <div class="pitem" onclick="askQ('What are women legal rights under Constitution of Pakistan and Protection Against Harassment of Women at Workplace Act 2010?')"><div class="pdot"></div><div><div class="ptxt">Women constitutional rights</div><div class="ptag">Tap to ask →</div></div></div>
-        <div class="pitem" onclick="askQ('How do I file a writ petition in the High Court for violation of fundamental rights under Article 199 of Constitution?')"><div class="pdot"></div><div><div class="ptxt">High Court writ petition</div><div class="ptag">Tap to ask →</div></div></div>
-        <div class="pitem" onclick="askQ('The government wants to acquire my private property. What are my rights under Article 24 of Constitution of Pakistan?')"><div class="pdot"></div><div><div class="ptxt">Government acquiring private property</div><div class="ptag">Tap to ask →</div></div></div>
-        <div class="ptl" style="margin-top:12px">Quick FAQs</div>
-        <div class="faq"><div class="fq" onclick="toggleFaq(this)">Key constitutional rights? <span class="farr">▼</span></div><div class="fa">Art 9: Right to life. Art 10: Protection from arbitrary arrest. Art 10-A: Right to fair trial. Art 14: Dignity and no torture. Art 19: Free speech. Art 20: Freedom of religion. Art 25: Equality. Art 25-A: Free education ages 5-16.</div></div>
-        <div class="faq"><div class="fq" onclick="toggleFaq(this)">What is a writ petition? <span class="farr">▼</span></div><div class="fa">Under Article 199 of the Constitution, any citizen can file a writ petition in the High Court when fundamental rights are violated. The court can immediately direct any authority to stop the violation.</div></div>
-        <div class="faq"><div class="fq" onclick="toggleFaq(this)">Is free education a right? <span class="farr">▼</span></div><div class="fa">Yes. Article 25-A (added by 18th Amendment 2010) makes free and compulsory education a fundamental right for children aged 5-16. If denied, a writ petition can be filed in the High Court.</div></div>
-        <button class="askbtn" onclick="focusChat()">💬 Ask about Constitutional Rights</button>
       </div>
     </div>
   </div>
 
+  <!-- CHAT COLUMN -->
   <div class="chat-col">
     <div class="chat-box" id="chatBox">
       <div class="chdr">
         <div class="chav">⚖️</div>
-        <div><div class="cht">WakeelAI Assistant</div><div class="chs" id="chs">Cites exact Pakistani law in every answer</div></div>
+        <div><div class="cht">WakeelAI Assistant</div><div class="chs" id="chs">Precise legal routing · Verified Pakistani law</div></div>
         <div class="pill"><div class="pill-dot"></div>AI Active</div>
       </div>
+
+      <!-- AGENT BANNER -->
       <div class="agent-banner" id="agentBanner">
         <div class="agent-av">⚖️</div>
         <div>
@@ -263,35 +298,56 @@ textarea.ur{direction:rtl;font-size:14px}
         </div>
         <button class="stop-agent" onclick="stopAgent()">Stop Agent</button>
       </div>
+
+      <!-- DOCUMENT READER -->
+      <div class="doc-reader" id="docReader" title="Upload a legal document for analysis">
+        <input type="file" id="docFile" accept=".pdf,.txt,.doc,.docx,.jpg,.jpeg,.png" onchange="handleDocUpload(event)">
+        <div class="doc-icon">📄</div>
+        <div class="doc-title" id="docTitle">Upload Legal Document for Analysis</div>
+        <div class="doc-sub" id="docSub">Tap to upload · PDF, Image, or Text · WakeelAI will analyze and advise</div>
+      </div>
+      <div class="doc-analyzing" id="docAnalyzing">
+        <span>🔍</span><span id="docAnalyzingText">Analyzing your document...</span>
+      </div>
+
+      <!-- MESSAGES -->
       <div class="msgs" id="msgs">
         <div class="msg ai">
           <div class="mav ai">⚖️</div>
           <div class="mc">
-            <div class="mb" id="wmsg"><b>Assalam o Alaikum!</b> I am <b>WakeelAI</b> — your Pakistani legal assistant.<br><br>🎤 <b>Press the green button below</b> to start the Voice Agent — speak your problem and I will answer back in voice.<br><br>📜 Every answer cites the exact law and section number.<br><br>👈 Or select a category / type your question below.</div>
-            <div class="disc" id="wdisc">General legal information only. Always consult a qualified lawyer for your specific case.</div>
+            <div class="mb" id="wmsg">
+              <strong>Assalam o Alaikum!</strong> I am <strong>WakeelAI</strong> — your Pakistani legal assistant.<br><br>
+              I provide <strong>precise legal guidance</strong> based on real Pakistani law — routing your case to the correct lawyer type and legal forum.<br><br>
+              🎤 <strong>Voice Agent</strong> — press the green button below to speak your problem<br>
+              📄 <strong>Document Reader</strong> — upload any legal document above for instant analysis<br>
+              👈 <strong>Select a category</strong> or type your question below
+            </div>
+            <div class="disc" id="wdisc">This is general legal information for guidance only. Please consult a qualified advocate for your specific case.</div>
           </div>
         </div>
       </div>
+
+      <!-- INPUT AREA -->
       <div class="iarea">
         <button class="agent-btn" id="agentBtn" onclick="toggleAgent()">🎤 Start Voice Agent — Talk to WakeelAI</button>
         <div class="samps" id="samps">
           <button class="sbtn" onclick="useSamp(this)">Can police arrest without warrant?</button>
-          <button class="sbtn" onclick="useSamp(this)">Tenant eviction rights?</button>
-          <button class="sbtn" onclick="useSamp(this)">How to file an FIR?</button>
-          <button class="sbtn" onclick="useSamp(this)">Women's divorce rights?</button>
-          <button class="sbtn" onclick="useSamp(this)">Minimum wage in Pakistan?</button>
+          <button class="sbtn" onclick="useSamp(this)">I need Khula divorce</button>
+          <button class="sbtn" onclick="useSamp(this)">Being blackmailed online</button>
+          <button class="sbtn" onclick="useSamp(this)">Landlord evicting me illegally</button>
+          <button class="sbtn" onclick="useSamp(this)">Employer not paying salary</button>
         </div>
         <div class="voice-bar" id="voiceBar"><span>🔴</span><span id="voiceText">Listening... speak now</span></div>
         <div class="voice-err" id="voiceErr"></div>
         <div class="irow">
-          <textarea id="inp" rows="1" placeholder="Type or speak your legal question..." oninput="ar(this)" onkeydown="hk(event)"></textarea>
-          <button class="mic-btn" id="micBtn" onclick="toggleVoice()" title="Speak">🎤</button>
+          <textarea id="inp" rows="1" placeholder="Describe your legal problem in detail..." oninput="ar(this)" onkeydown="hk(event)"></textarea>
+          <button class="mic-btn" id="micBtn" onclick="toggleVoice()" title="Speak your question">🎤</button>
           <button class="snd-btn" id="sndbtn" onclick="sendMsg(null)">&#10148;</button>
         </div>
         <div class="voice-hint" id="voiceHint">🎤 Tap mic to speak in English or Urdu</div>
       </div>
     </div>
-    <div class="fnote">📜 WakeelAI cites sections from PPC 1860, CrPC 1898, Constitution 1973, Muslim Family Laws Ordinance 1961, Factories Act 1934, Companies Act 2017 and other Pakistani legislation. Always consult a qualified lawyer for formal advice.</div>
+    <div class="fnote">⚖️ WakeelAI provides general legal information based on Pakistani law. All answers include precise legal routing — correct advocate type and forum. This is not a substitute for formal legal advice. Always consult a qualified advocate for your specific matter.</div>
   </div>
 </div>
 
@@ -306,41 +362,192 @@ var isListening = false;
 var agentMode = false;
 var synth = window.speechSynthesis;
 
-var LAWYER_MAP = {
-  property: '🏠 Property / Civil Lawyer — land, tenancy, inheritance disputes',
-  family: '👨‍👩‍👧 Family Law Lawyer — Khula, divorce, custody, maintenance',
-  criminal: '🚔 Criminal Defense Lawyer — FIR, bail, arrest, court defence',
-  labor: '👷 Labor / Employment Lawyer — salary, termination, EOBI',
-  business: '📋 Corporate / Commercial Lawyer — contracts, fraud, trademark',
-  rights: '⚖️ Constitutional / Human Rights Lawyer — writ petitions, fundamental rights'
+// ── SYSTEM PROMPT ─────────────────────────────────────────────
+var SYS = [
+  'You are WakeelAI, a precise Pakistani legal information assistant.',
+  '',
+  'CRITICAL PRECISION RULES — FOLLOW STRICTLY:',
+  '1. NEVER invent or guess specific section numbers (e.g. "345-C", "420-A"). Only cite section numbers you are certain exist in verified Pakistani law. If unsure of the exact section, name the Act only (e.g. "Pakistan Penal Code", "PECA 2016", "CrPC").',
+  '2. Always end your response with the standard disclaimer exactly as written: "This is general legal information for guidance. Please consult a qualified advocate for your specific case."',
+  '3. Be concise, practical, and clear. Avoid dense legal jargon. Speak directly to the user practical problem.',
+  '',
+  'LEGAL ROUTING FRAMEWORK — Always route the user to the correct advocate and forum:',
+  '',
+  'CYBERCRIME (Digital blackmail, online harassment, hacking, WhatsApp threats, leaked media, online fraud):',
+  '  Advocate: Cybercrime Specialist / Criminal Defense Advocate',
+  '  Forum: FIA Cyber Crime Reporting Centre (CCRC) — file at fia.gov.pk or visit nearest CCRC office',
+  '  First step: Do NOT delete messages. Screenshot everything — chats, profile links, phone numbers.',
+  '',
+  'FAMILY (Domestic violence, Khula, divorce, child custody, maintenance/kharcha):',
+  '  Advocate: Family Law Attorney / Family Court Advocate',
+  '  Forum: Local Family Court under West Pakistan Family Courts Act 1964',
+  '  First step: Collect Nikahnama, CNICs, and evidence of abuse or maintenance neglect.',
+  '',
+  'PROPERTY (Land disputes, Fard/Registry issues, illegal occupation/Qabza, tenant eviction):',
+  '  Advocate: Civil Litigator / Rent and Property Lawyer',
+  '  Forum: Rent Tribunal for tenancy issues. Civil Court or Revenue Office for land ownership.',
+  '  First step: Gather registered Rent Agreement, Fard-e-Malkiat, or sale deeds. Forcible eviction without court order is illegal.',
+  '',
+  'CRIMINAL (Financial fraud, cheating, theft, physical assault, FIR issues, bail):',
+  '  Advocate: Criminal Defense Lawyer',
+  '  Forum: Local Police Station (Thana) for FIR. Sessions Court for pre-arrest bail.',
+  '  First step: Note exact date, time, and witnesses. Distinguish civil money dispute from criminal intent.',
+  '',
+  'LABOR (Salary disputes, wrongful termination, overtime, EOBI):',
+  '  Advocate: Labor and Employment Lawyer',
+  '  Forum: District Labour Department (free complaint). Labour Court for formal cases.',
+  '  First step: Gather employment contract, salary slips, and all written communications.',
+  '',
+  'BUSINESS (Company fraud, contracts, trademark, cheque bounce, registration):',
+  '  Advocate: Corporate / Commercial Lawyer',
+  '  Forum: SECP for company matters. Civil Court for contract disputes. Police for criminal fraud.',
+  '  First step: Collect all written agreements, payment records, and communications.',
+  '',
+  'FORMAT YOUR RESPONSE AS FOLLOWS:',
+  '1. Brief empathetic acknowledgment of the problem (1 sentence)',
+  '2. What the law says about this situation (cite Act names, avoid guessing section numbers)',
+  '3. Recommended Advocate Type',
+  '4. Correct Legal Forum / Agency to approach',
+  '5. Immediate practical steps to take right now',
+  '6. The disclaimer on its own line at the end',
+  '',
+  'In voice/agent mode: keep response to 3-4 sentences max, then ask one follow-up question.'
+].join('\n');
+
+// ── DOCUMENT READER ───────────────────────────────────────────
+function handleDocUpload(event) {
+  var file = event.target.files[0];
+  if (!file) return;
+  var docReader = document.getElementById('docReader');
+  var docTitle = document.getElementById('docTitle');
+  var docSub = document.getElementById('docSub');
+  var docAnalyzing = document.getElementById('docAnalyzing');
+  var docAnalyzingText = document.getElementById('docAnalyzingText');
+  docTitle.textContent = file.name;
+  docSub.textContent = 'Reading document...';
+  docAnalyzing.classList.add('on');
+  docAnalyzingText.textContent = 'Reading ' + file.name + '...';
+  var reader = new FileReader();
+  // Handle image files
+  if (file.type.indexOf('image') >= 0) {
+    reader.onload = function(e) {
+      var base64 = e.target.result;
+      docAnalyzingText.textContent = 'Analyzing document with AI...';
+      analyzeDocumentText('[IMAGE DOCUMENT: ' + file.name + ']\n\nThe user has uploaded an image of a legal document named "' + file.name + '". Please ask them to describe what the document says or what problem they need help with, since image analysis requires additional processing. Acknowledge the upload and guide them.', file.name);
+    };
+    reader.readAsDataURL(file);
+  } else {
+    // Text/PDF
+    reader.onload = function(e) {
+      var text = e.target.result;
+      if (!text || text.trim().length < 10) {
+        text = '[Could not extract text from ' + file.name + '. Asking user to describe contents.]';
+      }
+      docAnalyzingText.textContent = 'Analyzing document with AI...';
+      var truncated = text.substring(0, 3000);
+      analyzeDocumentText(truncated, file.name);
+    };
+    reader.readAsText(file);
+  }
+  // Reset file input
+  event.target.value = '';
+}
+
+function analyzeDocumentText(text, fileName) {
+  var docAnalyzing = document.getElementById('docAnalyzing');
+  var docTitle = document.getElementById('docTitle');
+  var docSub = document.getElementById('docSub');
+  var userMsg = 'I have uploaded a legal document named "' + fileName + '". Here is the content:\n\n' + text + '\n\nPlease analyze this document and tell me: (1) What type of legal document this is, (2) What my legal situation appears to be, (3) What type of lawyer I need, (4) What legal forum I should approach, (5) What immediate steps I should take.';
+  addMessage('user', '📄 Document uploaded: <strong>' + fileName + '</strong><br><small style="color:var(--muted)">Analyzing for legal advice...</small>', null, null, false);
+  busy = true;
+  document.getElementById('sndbtn').disabled = true;
+  chatLog.push({ role: 'user', content: userMsg });
+  fetch('/api/chat', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ system: SYS, messages: chatLog })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.error) throw new Error(data.error);
+    var raw = (data.content || []).map(function(b) { return b.type === 'text' ? b.text : ''; }).join('').trim();
+    if (!raw) throw new Error('Empty');
+    chatLog.push({ role: 'assistant', content: raw });
+    docAnalyzing.classList.remove('on');
+    docTitle.textContent = 'Upload Another Document';
+    docSub.textContent = 'Tap to upload · PDF, Image, or Text';
+    var cat = detectCat(raw + ' ' + fileName);
+    var formatted = raw.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
+    addMessage('ai', formatted, cat, null, true);
+  })
+  .catch(function(err) {
+    docAnalyzing.classList.remove('on');
+    docTitle.textContent = 'Upload Legal Document';
+    docSub.textContent = 'Tap to upload · PDF, Image, or Text';
+    chatLog.pop();
+    addMessage('ai', 'Could not analyze the document. Please check your internet connection and try again.', null, null, false);
+  })
+  .finally(function() { busy = false; document.getElementById('sndbtn').disabled = false; });
+}
+
+// ── ROUTING CARD ──────────────────────────────────────────────
+var ROUTING = {
+  cyber: {
+    advocate: 'Cybercrime Specialist / Criminal Defense Advocate',
+    forum: 'FIA Cyber Crime Reporting Centre (CCRC)',
+    action: 'Do NOT delete messages. Screenshot all evidence. File at fia.gov.pk'
+  },
+  family: {
+    advocate: 'Family Law Attorney / Family Court Advocate',
+    forum: 'Local Family Court (West Pakistan Family Courts Act 1964)',
+    action: 'Collect Nikahnama, CNICs, and evidence of abuse or maintenance neglect'
+  },
+  property: {
+    advocate: 'Civil Litigator / Rent and Property Lawyer',
+    forum: 'Rent Tribunal (tenancy) or Civil Court / Revenue Office (land)',
+    action: 'Gather Rent Agreement, Fard-e-Malkiat, or sale deeds before seeing a lawyer'
+  },
+  criminal: {
+    advocate: 'Criminal Defense Lawyer',
+    forum: 'Local Police Station (Thana) for FIR · Sessions Court for bail',
+    action: 'Note exact date, time, and witnesses. Differentiate civil dispute from criminal act'
+  },
+  labor: {
+    advocate: 'Labor and Employment Lawyer',
+    forum: 'District Labour Department (free) · Labour Court for formal cases',
+    action: 'Gather employment contract, salary slips, and all written communications'
+  },
+  business: {
+    advocate: 'Corporate / Commercial Lawyer',
+    forum: 'SECP for company matters · Civil Court for contracts · Police for criminal fraud',
+    action: 'Collect all agreements, payment records, and communications'
+  }
 };
 
-var SYS = 'You are WakeelAI, an expert AI legal assistant for Pakistani law. You speak like a warm, helpful Pakistani lawyer.\n\nRULES:\n1. Always cite exact Pakistani law — Section 54 CrPC, Article 10 Constitution 1973, Section 8 Muslim Family Laws Ordinance 1961, etc.\n2. In voice/agent mode keep responses SHORT — 2 to 3 sentences max per turn, then ask ONE follow-up question.\n3. After giving advice, ask if they want to be connected to a lawyer.\n4. Be conversational and empathetic — like a helpful friend who knows the law.\n5. End every final advice with: 📜 Legal basis: [laws cited]\n6. Do NOT add a lawyer recommendation — it is added automatically.';
+function buildRoutingCard(cat) {
+  var r = ROUTING[cat];
+  if (!r) return '';
+  return '<div class="route-card">' +
+    '<div class="route-header">⚖️ Legal Routing</div>' +
+    '<div class="route-row"><span class="route-label">Advocate</span><span class="route-val">' + r.advocate + '</span></div>' +
+    '<div class="route-row"><span class="route-label">Forum</span><span class="route-val">' + r.forum + '</span></div>' +
+    '<div class="route-row"><span class="route-label">Do Now</span><span class="route-val">' + r.action + '</span></div>' +
+    '</div>';
+}
 
-// ── SPEECH SYNTHESIS (AI speaks) ──────────────────────────────
+// ── VOICE OUTPUT ──────────────────────────────────────────────
 function speakText(text, onDone) {
   if (!synth) { if (onDone) onDone(); return; }
   synth.cancel();
-  var clean = text
-    .replace(/📜[^\n]*/g, '')
-    .replace(/<[^>]+>/g, '')
-    .replace(/\*\*/g, '')
-    .replace(/\n+/g, '. ')
-    .trim();
+  var clean = text.replace(/<[^>]+>/g, '').replace(/📜[^\n]*/g, '').replace(/This is general legal information[^\n]*/g, '').replace(/\n+/g, '. ').trim();
   if (!clean) { if (onDone) onDone(); return; }
   var utt = new SpeechSynthesisUtterance(clean);
   utt.lang = appLang === 'ur' ? 'ur-PK' : 'en-PK';
-  utt.rate = 0.9;
-  utt.pitch = 1.0;
-  utt.volume = 1.0;
+  utt.rate = 0.9; utt.pitch = 1.0; utt.volume = 1.0;
   var voices = synth.getVoices();
-  var pick = null;
-  if (appLang === 'ur') {
-    pick = voices.find(function(v) { return v.lang.indexOf('ur') >= 0; });
-  } else {
-    pick = voices.find(function(v) { return v.lang.indexOf('en') >= 0 && v.name.indexOf('Google') >= 0; });
-    if (!pick) pick = voices.find(function(v) { return v.lang.indexOf('en') >= 0; });
-  }
+  var pick = appLang === 'ur'
+    ? voices.find(function(v) { return v.lang.indexOf('ur') >= 0; })
+    : (voices.find(function(v) { return v.lang.indexOf('en') >= 0 && v.name.indexOf('Google') >= 0; }) || voices.find(function(v) { return v.lang.indexOf('en') >= 0; }));
   if (pick) utt.voice = pick;
   utt.onend = function() { if (onDone) onDone(); };
   utt.onerror = function() { if (onDone) onDone(); };
@@ -352,16 +559,14 @@ function toggleAgent() {
   if (agentMode) { stopAgent(); return; }
   agentMode = true;
   document.getElementById('agentBtn').classList.add('active');
-  document.getElementById('agentBtn').textContent = '⏹ Stop Voice Agent';
+  document.getElementById('agentBtn').textContent = 'Stop Voice Agent';
   document.getElementById('agentBanner').classList.add('on');
-  setAgentStatus('🔊 Speaking...', 'WakeelAI is greeting you');
+  setAgentStatus('Speaking...', 'WakeelAI is greeting you');
   var greeting = appLang === 'ur'
-    ? 'السلام علیکم! میں وکیل اے آئی ہوں۔ آپ کا قانونی مسئلہ کیا ہے؟ بتائیں میں مدد کروں گا۔'
-    : 'Assalam o Alaikum! I am WakeelAI, your personal legal assistant. Please tell me your legal problem and I will help you step by step.';
+    ? 'السلام علیکم! میں وکیل اے آئی ہوں۔ آپ کا قانونی مسئلہ کیا ہے؟ تفصیل سے بتائیں۔'
+    : 'Assalam o Alaikum! I am WakeelAI. Please describe your legal problem in detail and I will guide you to the right lawyer and legal forum.';
   addMessage('ai', greeting, null, null, false);
-  speakText(greeting, function() {
-    if (agentMode) startListeningAgent();
-  });
+  speakText(greeting, function() { if (agentMode) startListeningAgent(); });
 }
 
 function stopAgent() {
@@ -373,11 +578,11 @@ function stopAgent() {
   document.getElementById('agentBanner').classList.remove('on');
 }
 
-function setAgentStatus(status, sub) {
-  var s = document.getElementById('agentStatus');
-  var b = document.getElementById('agentSub');
-  if (s) s.textContent = status;
-  if (b) b.textContent = sub || '';
+function setAgentStatus(s, b) {
+  var es = document.getElementById('agentStatus');
+  var eb = document.getElementById('agentSub');
+  if (es) es.textContent = s;
+  if (eb) eb.textContent = b || '';
 }
 
 function startListeningAgent() {
@@ -387,7 +592,7 @@ function startListeningAgent() {
   try { recognition.start(); } catch(e) {}
 }
 
-// ── VOICE INPUT SETUP ─────────────────────────────────────────
+// ── VOICE INPUT ───────────────────────────────────────────────
 (function() {
   var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SR) return;
@@ -396,62 +601,30 @@ function startListeningAgent() {
   recognition = new SR();
   recognition.continuous = false;
   recognition.interimResults = true;
-
   recognition.onstart = function() {
     isListening = true;
-    if (!agentMode) {
-      document.getElementById('micBtn').classList.add('listening');
-      document.getElementById('micBtn').textContent = '⏹';
-      document.getElementById('voiceBar').classList.add('on');
-    }
+    if (!agentMode) { document.getElementById('micBtn').classList.add('listening'); document.getElementById('micBtn').textContent = '⏹'; document.getElementById('voiceBar').classList.add('on'); }
   };
-
   recognition.onresult = function(e) {
-    var finalT = '', interT = '';
-    for (var i = e.resultIndex; i < e.results.length; i++) {
-      var t = e.results[i][0].transcript;
-      if (e.results[i].isFinal) finalT += t;
-      else interT += t;
-    }
-    if (finalT) {
-      if (agentMode) {
-        setAgentStatus('💭 Thinking...', 'Finding your answer from Pakistani law');
-        sendMsg(finalT.trim());
-      } else {
-        var cur = document.getElementById('inp').value;
-        document.getElementById('inp').value = (cur + ' ' + finalT).trim();
-        ar(document.getElementById('inp'));
-      }
-    } else if (agentMode && interT) {
-      setAgentStatus('🎤 Hearing: ' + interT, '');
-    } else if (!agentMode && interT) {
-      document.getElementById('voiceText').textContent = interT;
-    }
+    var f = '', t = '';
+    for (var i = e.resultIndex; i < e.results.length; i++) { var tx = e.results[i][0].transcript; if (e.results[i].isFinal) f += tx; else t += tx; }
+    if (f) {
+      if (agentMode) { setAgentStatus('Thinking...', 'Finding the right legal guidance'); sendMsg(f.trim()); }
+      else { var c = document.getElementById('inp').value; document.getElementById('inp').value = (c + ' ' + f).trim(); ar(document.getElementById('inp')); }
+    } else if (agentMode && t) { setAgentStatus('Hearing: ' + t, ''); }
+    else if (!agentMode && t) { document.getElementById('voiceText').textContent = t; }
   };
-
   recognition.onerror = function(e) {
     isListening = false;
     if (!agentMode) {
-      document.getElementById('micBtn').classList.remove('listening');
-      document.getElementById('micBtn').textContent = '🎤';
-      document.getElementById('voiceBar').classList.remove('on');
-      var msg = e.error === 'not-allowed' ? 'Microphone access denied. Allow mic in Chrome settings.' :
-                e.error === 'no-speech' ? 'No speech detected. Try again.' : 'Voice error: ' + e.error;
-      var el = document.getElementById('voiceErr');
-      el.textContent = msg;
-      el.classList.add('on');
-    } else {
-      setAgentStatus('Could not hear you', 'Tap Stop Agent and type below');
-    }
+      document.getElementById('micBtn').classList.remove('listening'); document.getElementById('micBtn').textContent = '🎤'; document.getElementById('voiceBar').classList.remove('on');
+      var msg = e.error === 'not-allowed' ? 'Microphone access denied. Allow mic in Chrome settings.' : e.error === 'no-speech' ? 'No speech detected. Try again.' : 'Voice error: ' + e.error;
+      var el = document.getElementById('voiceErr'); el.textContent = msg; el.classList.add('on');
+    } else { setAgentStatus('Could not hear', 'Please try again'); }
   };
-
   recognition.onend = function() {
     isListening = false;
-    if (!agentMode) {
-      document.getElementById('micBtn').classList.remove('listening');
-      document.getElementById('micBtn').textContent = '🎤';
-      document.getElementById('voiceBar').classList.remove('on');
-    }
+    if (!agentMode) { document.getElementById('micBtn').classList.remove('listening'); document.getElementById('micBtn').textContent = '🎤'; document.getElementById('voiceBar').classList.remove('on'); }
   };
 })();
 
@@ -460,22 +633,18 @@ function toggleVoice() {
   if (isListening) { try { recognition.stop(); } catch(e) {} return; }
   document.getElementById('voiceErr').classList.remove('on');
   recognition.lang = appLang === 'ur' ? 'ur-PK' : 'en-PK';
-  try { recognition.start(); } catch(e) {
-    var el = document.getElementById('voiceErr');
-    el.textContent = 'Could not start mic. Try again.';
-    el.classList.add('on');
-  }
+  try { recognition.start(); } catch(e) { var el = document.getElementById('voiceErr'); el.textContent = 'Could not start mic. Try again.'; el.classList.add('on'); }
 }
 
-// ── CATEGORY FUNCTIONS ────────────────────────────────────────
+// ── CATEGORY ──────────────────────────────────────────────────
 function detectCat(q) {
-  var t = q.toLowerCase();
-  if (/property|land|rent|tenant|landlord|evict|inherit|deed|jaidaad|kiraya/.test(t)) return 'property';
-  if (/family|divorce|marriage|khula|custody|nikah|mehr|maintenance|nafqa|talaq|husband|wife|children/.test(t)) return 'family';
-  if (/police|arrest|fir|bail|criminal|murder|theft|blackmail|warrant|crpc|ppc/.test(t)) return 'criminal';
+  var t = (q || '').toLowerCase();
+  if (/cyber|hack|blackmail|online|whatsapp|social media|peca|fia|digital|leak|threat|scam|fraud.*online/.test(t)) return 'cyber';
+  if (/family|divorce|khula|custody|nikah|mehr|maintenance|nafqa|talaq|domestic|violence|husband|wife|child/.test(t)) return 'family';
+  if (/property|land|rent|tenant|landlord|evict|inherit|qabza|fard|registry|jaidaad|kiraya/.test(t)) return 'property';
+  if (/police|arrest|fir|bail|criminal|assault|theft|murder|blackmail|warrant|crpc/.test(t)) return 'criminal';
   if (/salary|wage|job|employer|fired|terminated|overtime|labor|labour|eobi|pension/.test(t)) return 'labor';
   if (/business|contract|partner|company|trademark|cheque|secp|brand|fraud|489/.test(t)) return 'business';
-  if (/rights|constitution|fundamental|discrimination|freedom|writ|petition|article/.test(t)) return 'rights';
   return selCat || null;
 }
 
@@ -487,24 +656,17 @@ function toggleCat(cat) {
   document.getElementById('c-' + cat).classList.add('on');
   setTimeout(function() { document.getElementById('p-' + cat).scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }, 100);
 }
-
 function closeCat(cat, reset) {
   if (reset === undefined) reset = true;
   document.getElementById('p-' + cat).classList.remove('on');
   document.getElementById('c-' + cat).classList.remove('on');
   if (reset) { activeC = null; selCat = ''; }
 }
-
 function toggleFaq(el) {
-  var a = el.nextElementSibling;
-  var open = el.classList.contains('on');
-  el.closest('.pbody').querySelectorAll('.fq').forEach(function(q) {
-    q.classList.remove('on');
-    q.nextElementSibling.classList.remove('on');
-  });
+  var a = el.nextElementSibling, open = el.classList.contains('on');
+  el.closest('.pbody').querySelectorAll('.fq').forEach(function(q) { q.classList.remove('on'); q.nextElementSibling.classList.remove('on'); });
   if (!open) { el.classList.add('on'); a.classList.add('on'); }
 }
-
 function focusChat() { document.getElementById('inp').focus(); document.getElementById('chatBox').scrollIntoView({ behavior: 'smooth' }); }
 function askQ(q) { document.getElementById('inp').value = q; document.getElementById('chatBox').scrollIntoView({ behavior: 'smooth' }); setTimeout(function() { sendMsg(null); }, 300); }
 function useSamp(b) { document.getElementById('inp').value = b.textContent; sendMsg(null); }
@@ -517,41 +679,27 @@ function addMessage(role, html, cat, sources, doSpeak) {
   var isUr = appLang === 'ur';
   var div = document.createElement('div');
   div.className = 'msg ' + role;
-
-  var disc = 'General legal information only. Consult a qualified lawyer for your specific case.';
-  var lwr = '';
-  if (role === 'ai' && cat && LAWYER_MAP[cat]) {
-    var lbl = isUr ? 'اس معاملے کے لیے:' : 'For this matter, you need a:';
-    lwr = '<div class="lwrec">👨‍💼 ' + lbl + '<br><strong>' + LAWYER_MAP[cat] + '</strong></div>';
-  }
+  var disc = 'This is general legal information for guidance. Please consult a qualified advocate for your specific case.';
+  var routeCard = (role === 'ai' && cat) ? buildRoutingCard(cat) : '';
   var src = sources ? '<div class="src-box">' + sources + '</div>' : '';
-
-  // Speak button
-  var speakId = 'spk_' + Date.now();
+  var speakId = 'spk' + Date.now();
   var speakBtn = '';
   if (role === 'ai' && synth) {
-    var plain = html.replace(/<[^>]+>/g, '').replace(/📜[^\n]*/g, '').trim();
-    var label = isUr ? '🔊 سنیں' : '🔊 Listen';
-    speakBtn = '<button class="speak-btn" id="' + speakId + '" onclick="handleSpeak(\'' + speakId + '\', decodeURIComponent(\'' + encodeURIComponent(plain) + '\'))">' + label + '</button>';
+    var plain = html.replace(/<[^>]+>/g, '').replace(/This is general legal[^\n]*/g, '').trim();
+    var encPlain = encodeURIComponent(plain);
+    speakBtn = '<button class="speak-btn" id="' + speakId + '" onclick="handleSpeak(\'' + speakId + '\',decodeURIComponent(\'' + encPlain + '\'))">' + (isUr ? '🔊 سنیں' : '🔊 Listen') + '</button>';
   }
-
   if (role === 'ai') {
-    div.innerHTML = '<div class="mav ai">⚖️</div><div class="mc"><div class="mb">' + html + '</div>' + src + lwr + speakBtn + '<div class="disc">⚠️ ' + disc + '</div></div>';
+    div.innerHTML = '<div class="mav ai">⚖️</div><div class="mc"><div class="mb">' + html + '</div>' + routeCard + src + speakBtn + '<div class="disc">⚠️ ' + disc + '</div></div>';
   } else {
     div.innerHTML = '<div class="mav us">👤</div><div class="mb"' + (isUr ? ' style="direction:rtl;text-align:right"' : '') + '>' + html + '</div>';
   }
   msgs.appendChild(div);
   msgs.scrollTop = msgs.scrollHeight;
-
-  // Auto-speak in agent mode
   if (role === 'ai' && doSpeak !== false && agentMode) {
-    var txt = html.replace(/<[^>]+>/g, '').replace(/📜[^\n]*/g, '').trim();
-    setAgentStatus('🔊 Speaking...', 'WakeelAI is explaining your rights');
-    speakText(txt, function() {
-      if (agentMode) {
-        setTimeout(function() { startListeningAgent(); }, 600);
-      }
-    });
+    var txt = html.replace(/<[^>]+>/g, '').replace(/This is general legal[^\n]*/g, '').trim();
+    setAgentStatus('Speaking...', 'WakeelAI is explaining');
+    speakText(txt, function() { if (agentMode) setTimeout(function() { startListeningAgent(); }, 700); });
   }
 }
 
@@ -559,31 +707,18 @@ function handleSpeak(btnId, text) {
   var btn = document.getElementById(btnId);
   if (!btn) return;
   if (btn.classList.contains('active')) {
-    synth.cancel();
-    btn.classList.remove('active');
-    btn.textContent = appLang === 'ur' ? '🔊 سنیں' : '🔊 Listen';
-    return;
+    synth.cancel(); btn.classList.remove('active'); btn.textContent = appLang === 'ur' ? '🔊 سنیں' : '🔊 Listen'; return;
   }
-  document.querySelectorAll('.speak-btn.active').forEach(function(b) {
-    b.classList.remove('active');
-    b.textContent = appLang === 'ur' ? '🔊 سنیں' : '🔊 Listen';
-  });
-  synth.cancel();
-  btn.classList.add('active');
-  btn.textContent = '⏹ Stop';
-  speakText(text, function() {
-    btn.classList.remove('active');
-    btn.textContent = appLang === 'ur' ? '🔊 سنیں' : '🔊 Listen';
-  });
+  document.querySelectorAll('.speak-btn.active').forEach(function(b) { b.classList.remove('active'); b.textContent = appLang === 'ur' ? '🔊 سنیں' : '🔊 Listen'; });
+  synth.cancel(); btn.classList.add('active'); btn.textContent = '⏹ Stop';
+  speakText(text, function() { btn.classList.remove('active'); btn.textContent = appLang === 'ur' ? '🔊 سنیں' : '🔊 Listen'; });
 }
 
 function showTyping() {
   var msgs = document.getElementById('msgs');
-  var d = document.createElement('div');
-  d.className = 'msg ai'; d.id = 'typ';
+  var d = document.createElement('div'); d.className = 'msg ai'; d.id = 'typ';
   d.innerHTML = '<div class="mav ai">⚖️</div><div class="typing"><span></span><span></span><span></span></div>';
-  msgs.appendChild(d);
-  msgs.scrollTop = msgs.scrollHeight;
+  msgs.appendChild(d); msgs.scrollTop = msgs.scrollHeight;
 }
 function rmTyping() { var t = document.getElementById('typ'); if (t) t.remove(); }
 
@@ -595,39 +730,31 @@ function sendMsg(overrideText) {
   if (isListening && !agentMode) { try { recognition.stop(); } catch(e) {} }
   addMessage('user', txt.replace(/</g, '&lt;'), null, null, false);
   if (!overrideText) { document.getElementById('inp').value = ''; document.getElementById('inp').style.height = 'auto'; }
-  busy = true;
-  document.getElementById('sndbtn').disabled = true;
-  showTyping();
+  busy = true; document.getElementById('sndbtn').disabled = true; showTyping();
   var cat = detectCat(txt);
   chatLog.push({ role: 'user', content: txt });
-  var agentNote = agentMode ? '\n\nVOICE MODE: Keep response to 2-3 sentences max. Be conversational. Ask one follow-up question.' : '';
+  var agentNote = agentMode ? '\n\nVOICE MODE: 3-4 sentences max. Be conversational. Ask one follow-up question at the end.' : '';
+  var catNote = selCat ? '\nUser selected category: ' + selCat + '.' : '';
   fetch('/api/chat', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      system: SYS + agentNote + (selCat ? '\nCategory: ' + selCat + ' law.' : ''),
-      messages: chatLog
-    })
+    body: JSON.stringify({ system: SYS + agentNote + catNote, messages: chatLog })
   })
   .then(function(r) { return r.json(); })
   .then(function(data) {
     if (data.error) throw new Error(data.error);
     var raw = (data.content || []).map(function(b) { return b.type === 'text' ? b.text : ''; }).join('').trim();
-    if (!raw) throw new Error('Empty response');
-    var srcMatch = raw.match(/📜\s*Legal basis[:\s]+(.+)/i);
-    var sources = srcMatch ? srcMatch[0].trim() : null;
-    var body = sources ? raw.replace(sources, '').trim() : raw;
+    if (!raw) throw new Error('Empty');
     chatLog.push({ role: 'assistant', content: raw });
     rmTyping();
-    var formatted = body.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
-    addMessage('ai', formatted, cat, sources, true);
-    if (agentMode) setAgentStatus('🔊 Speaking...', 'WakeelAI is answering');
+    var detCat = detectCat(raw + ' ' + txt) || cat;
+    var formatted = raw.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
+    addMessage('ai', formatted, detCat, null, true);
+    if (agentMode) setAgentStatus('Speaking...', 'WakeelAI is answering');
   })
   .catch(function(err) {
-    rmTyping();
-    chatLog.pop();
-    var msg = '⚠️ ' + (err && err.message ? err.message : 'Could not connect. Check your internet.');
-    addMessage('ai', msg, null, null, false);
+    rmTyping(); chatLog.pop();
+    addMessage('ai', 'Could not get a response. Please check your internet and try again.', null, null, false);
     if (agentMode) { setAgentStatus('Error', 'Please try again'); setTimeout(function() { if (agentMode) startListeningAgent(); }, 2000); }
   })
   .finally(function() { busy = false; document.getElementById('sndbtn').disabled = false; });
@@ -640,19 +767,21 @@ function setLang(l) {
   document.getElementById('bur').classList.toggle('on', l === 'ur');
   var inp = document.getElementById('inp');
   inp.classList.toggle('ur', l === 'ur');
-  inp.placeholder = l === 'ur' ? 'اپنا قانونی سوال لکھیں یا بولیں...' : 'Type or speak your legal question...';
-  document.getElementById('htitle').innerHTML = l === 'ur' ? 'اپنے <span>قانونی حقوق</span> جانیں،<br>AI سے بات کریں' : 'Your <span>Legal Rights</span>,<br>Explained by AI';
-  document.getElementById('hsub').textContent = l === 'ur' ? 'وکیل اے آئی سے بات کریں — سوال بولیں، جواب سنیں۔ ہر جواب میں پاکستانی قانون کا حوالہ۔' : 'Talk to WakeelAI like a real lawyer. Speak your problem and it answers back in voice. Every answer cites exact Pakistani law.';
+  inp.placeholder = l === 'ur' ? 'اپنا قانونی مسئلہ تفصیل سے لکھیں...' : 'Describe your legal problem in detail...';
+  document.getElementById('htitle').innerHTML = l === 'ur' ? 'اپنے <span>قانونی حقوق</span> جانیں،<br>درست رہنمائی کے ساتھ' : 'Your <span>Legal Rights</span>,<br>Explained with Precision';
+  document.getElementById('hsub').textContent = l === 'ur' ? 'وکیل اے آئی آپ کو درست وکیل اور عدالت تک پہنچاتا ہے۔ بولیں یا لکھیں — ہر جواب قانونی طور پر درست ہے۔' : 'WakeelAI routes your case to the exact lawyer type and legal forum. Speak or type — every answer is precise and legally accurate.';
   document.getElementById('catlbl').textContent = l === 'ur' ? 'قانونی زمرہ منتخب کریں' : 'Choose a legal category';
-  document.getElementById('chs').textContent = l === 'ur' ? 'ہر جواب میں پاکستانی قانون کا حوالہ' : 'Cites exact Pakistani law in every answer';
+  document.getElementById('chs').textContent = l === 'ur' ? 'درست قانونی رہنمائی · پاکستانی قانون' : 'Precise legal routing · Verified Pakistani law';
   document.getElementById('agentBtn').textContent = l === 'ur' ? '🎤 وائس ایجنٹ شروع کریں — وکیل اے آئی سے بات کریں' : '🎤 Start Voice Agent — Talk to WakeelAI';
+  document.getElementById('docTitle').textContent = l === 'ur' ? 'قانونی دستاویز اپ لوڈ کریں' : 'Upload Legal Document for Analysis';
+  document.getElementById('docSub').textContent = l === 'ur' ? 'ٹیپ کریں · PDF، تصویر، یا ٹیکسٹ' : 'Tap to upload · PDF, Image, or Text · WakeelAI will analyze and advise';
   document.getElementById('wmsg').innerHTML = l === 'ur'
-    ? '<b>السلام علیکم!</b> میں <b>وکیل اے آئی</b> ہوں۔<br><br>🎤 <b>نیچے سبز بٹن دبائیں</b> اور اپنا مسئلہ بولیں — میں سن کر جواب دوں گا۔<br><br>📜 ہر جواب میں پاکستانی قانون کا مخصوص سیکشن نمبر ذکر ہوتا ہے۔'
-    : '<b>Assalam o Alaikum!</b> I am <b>WakeelAI</b> — your Pakistani legal assistant.<br><br>🎤 <b>Press the green button below</b> to start the Voice Agent — speak your problem and I will answer back in voice.<br><br>📜 Every answer cites the exact law and section number.';
-  document.getElementById('wdisc').textContent = l === 'ur' ? 'عام قانونی معلومات — باقاعدہ مشورے کے لیے وکیل سے رجوع کریں۔' : 'General legal information only. Always consult a qualified lawyer for your specific case.';
+    ? '<strong>السلام علیکم!</strong> میں <strong>وکیل اے آئی</strong> ہوں — پاکستان کا قانونی معاون۔<br><br>میں آپ کو <strong>درست وکیل اور عدالت</strong> تک پہنچاتا ہوں۔<br><br>🎤 <strong>وائس ایجنٹ</strong> — نیچے سبز بٹن دبائیں<br>📄 <strong>دستاویز</strong> — اوپر اپ لوڈ کریں<br>👈 <strong>زمرہ منتخب کریں</strong> یا سوال لکھیں'
+    : '<strong>Assalam o Alaikum!</strong> I am <strong>WakeelAI</strong> — your Pakistani legal assistant.<br><br>I provide <strong>precise legal guidance</strong> — routing your case to the correct lawyer type and legal forum.<br><br>🎤 <strong>Voice Agent</strong> — press the green button below<br>📄 <strong>Document Reader</strong> — upload any legal document above<br>👈 <strong>Select a category</strong> or type your question';
+  document.getElementById('wdisc').textContent = l === 'ur' ? 'یہ عام قانونی معلومات ہیں۔ اپنے مخصوص معاملے کے لیے کسی مستند وکیل سے رجوع کریں۔' : 'This is general legal information for guidance only. Please consult a qualified advocate for your specific case.';
   document.getElementById('voiceHint').textContent = l === 'ur' ? '🎤 مائیک دبائیں — اردو یا انگریزی میں بولیں' : '🎤 Tap mic to speak in English or Urdu';
-  var sEn = ['Can police arrest without warrant?', 'Tenant eviction rights?', 'How to file an FIR?', "Women's divorce rights?", 'Minimum wage in Pakistan?'];
-  var sUr = ['بغیر وارنٹ گرفتاری؟', 'کرایہ دار کے حقوق؟', 'ایف آئی آر کیسے کروائیں؟', 'خلع کے حقوق؟', 'کم از کم اجرت؟'];
+  var sEn = ['Can police arrest without warrant?', 'I need Khula divorce', 'Being blackmailed online', 'Landlord evicting me illegally', 'Employer not paying salary'];
+  var sUr = ['بغیر وارنٹ گرفتاری؟', 'مجھے خلع چاہیے', 'آن لائن بلیک میل ہو رہا ہوں', 'مکان مالک غیرقانونی بے دخل کر رہا ہے', 'آجر تنخواہ نہیں دے رہا'];
   document.querySelectorAll('.sbtn').forEach(function(b, i) { b.textContent = (l === 'ur' ? sUr : sEn)[i] || b.textContent; });
   if (recognition) recognition.lang = l === 'ur' ? 'ur-PK' : 'en-PK';
 }
