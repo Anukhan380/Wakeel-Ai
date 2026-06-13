@@ -1,0 +1,14 @@
+[
+  {
+    "id": "LAW001",
+    "name": "Barrister Ahmed Khan",
+    "city": "Peshawar",
+    "specialty": ["criminal","property"],
+    "phone": "0300-1234567",
+    "bar_number": "KPK-1234",
+    "experience": "12 years",
+    "active": true,
+    "access_code": "LAW-2847",
+    "plan": "premium"
+  }
+]
